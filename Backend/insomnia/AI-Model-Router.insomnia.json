@@ -1,0 +1,346 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-08-10T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v8",
+  "resources": [
+    {
+      "_id": "wrk_ai_model_router",
+      "_type": "workspace",
+      "parentId": null,
+      "name": "AI Model Router API",
+      "description": "Collection covering all backend endpoints: health, auth (register/login/refresh/me/logout), and chat gateway.",
+      "scope": "collection"
+    },
+    {
+      "_id": "env_base",
+      "_type": "environment",
+      "parentId": "wrk_ai_model_router",
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://127.0.0.1:3000/api/v1",
+        "token": "",
+        "refreshToken": ""
+      },
+      "dataPropertyOrder": {
+        "&": ["base_url", "token", "refreshToken"]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 0
+    },
+    {
+      "_id": "env_local",
+      "_type": "environment",
+      "parentId": "env_base",
+      "name": "Local",
+      "data": {
+        "base_url": "http://127.0.0.1:3000/api/v1"
+      },
+      "dataPropertyOrder": {
+        "&": ["base_url"]
+      },
+      "color": "#7d69cb",
+      "isPrivate": false,
+      "metaSortKey": 0
+    },
+    {
+      "_id": "fld_health",
+      "_type": "request_group",
+      "parentId": "wrk_ai_model_router",
+      "name": "Health",
+      "description": "",
+      "environment": {},
+      "metaSortKey": -300
+    },
+    {
+      "_id": "fld_auth",
+      "_type": "request_group",
+      "parentId": "wrk_ai_model_router",
+      "name": "Auth",
+      "description": "",
+      "environment": {},
+      "metaSortKey": -200
+    },
+    {
+      "_id": "fld_chat",
+      "_type": "request_group",
+      "parentId": "wrk_ai_model_router",
+      "name": "Chat",
+      "description": "",
+      "environment": {},
+      "metaSortKey": -100
+    },
+    {
+      "_id": "fld_usage",
+      "_type": "request_group",
+      "parentId": "wrk_ai_model_router",
+      "name": "Usage",
+      "description": "",
+      "environment": {},
+      "metaSortKey": 0
+    },
+    {
+      "_id": "req_health_check",
+      "_type": "request",
+      "parentId": "fld_health",
+      "name": "Health Check",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/health",
+      "headers": [],
+      "body": {},
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -400
+    },
+    {
+      "_id": "req_register",
+      "_type": "request",
+      "parentId": "fld_auth",
+      "name": "Register",
+      "description": "",
+      "method": "POST",
+      "url": "{{ _.base_url }}/register",
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\"\n}"
+      },
+      "parameters": [],
+      "authentication": {},
+      "afterResponseScript": "if (insomnia.response.code === 201) {\n  const data = insomnia.response.json();\n  insomnia.environment.set('token', data.token);\n  insomnia.environment.set('refreshToken', data.refreshToken);\n}",
+      "metaSortKey": -300
+    },
+    {
+      "_id": "req_login",
+      "_type": "request",
+      "parentId": "fld_auth",
+      "name": "Login",
+      "description": "",
+      "method": "POST",
+      "url": "{{ _.base_url }}/login",
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\"\n}"
+      },
+      "parameters": [],
+      "authentication": {},
+      "afterResponseScript": "if (insomnia.response.code === 200) {\n  const data = insomnia.response.json();\n  insomnia.environment.set('token', data.token);\n  insomnia.environment.set('refreshToken', data.refreshToken);\n}",
+      "metaSortKey": -200
+    },
+    {
+      "_id": "req_refresh",
+      "_type": "request",
+      "parentId": "fld_auth",
+      "name": "Refresh Token",
+      "description": "",
+      "method": "POST",
+      "url": "{{ _.base_url }}/refresh",
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"refreshToken\": \"{{ _.refreshToken }}\"\n}"
+      },
+      "parameters": [],
+      "authentication": {},
+      "afterResponseScript": "if (insomnia.response.code === 200) {\n  const data = insomnia.response.json();\n  insomnia.environment.set('token', data.token);\n  insomnia.environment.set('refreshToken', data.refreshToken);\n}",
+      "metaSortKey": -100
+    },
+    {
+      "_id": "req_me",
+      "_type": "request",
+      "parentId": "fld_auth",
+      "name": "Get My Info",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/me",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "body": {},
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": 0
+    },
+    {
+      "_id": "req_logout",
+      "_type": "request",
+      "parentId": "fld_auth",
+      "name": "Logout",
+      "description": "",
+      "method": "POST",
+      "url": "{{ _.base_url }}/logout",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "body": {},
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": 100
+    },
+    {
+      "_id": "req_chat_generate",
+      "_type": "request",
+      "parentId": "fld_chat",
+      "name": "Generate Chat (Auto-routed)",
+      "description": "Only 'prompt' is required. The gateway scores prompt complexity and auto-picks a tier/provider/model. Optional overrides: model, temperature, maxOutputTokens, topP, topK, candidateCount.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/chat",
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"prompt\": \"Hello, how are you?\"\n}"
+      },
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -400
+    },
+    {
+      "_id": "req_chat_simple_tier",
+      "_type": "request",
+      "parentId": "fld_chat",
+      "name": "Chat - Simple Tier (Groq)",
+      "description": "Score <=20 -> routes to Groq llama-3.1-8b-instant.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/chat",
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"prompt\": \"Hi, how are you?\"\n}"
+      },
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -390
+    },
+    {
+      "_id": "req_chat_fast_tier",
+      "_type": "request",
+      "parentId": "fld_chat",
+      "name": "Chat - Fast Tier (Cerebras)",
+      "description": "Score 21-40 -> routes to Cerebras llama3.1-8b.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/chat",
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"prompt\": \"Please compare the pros and cons of using Docker versus virtual machines for deployment.\"\n}"
+      },
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -380
+    },
+    {
+      "_id": "req_chat_moderate_tier",
+      "_type": "request",
+      "parentId": "fld_chat",
+      "name": "Chat - Moderate Tier (OpenRouter)",
+      "description": "Score 41-60 -> routes to OpenRouter openrouter/auto.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/chat",
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"prompt\": \"Analyze and compare the performance trade-offs between SQL and NoSQL databases for a growing e-commerce platform, considering read and write patterns.\"\n}"
+      },
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -370
+    },
+    {
+      "_id": "req_chat_medium_tier",
+      "_type": "request",
+      "parentId": "fld_chat",
+      "name": "Chat - Medium Tier (Gemini Flash)",
+      "description": "Score 61-80 -> routes to Gemini gemini-flash-latest.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/chat",
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"prompt\": \"Please explain in detail the design considerations for building a real-time notification system that scales to millions of users, and compare at least two different messaging queue technologies you might use, describing their respective trade-offs.\"\n}"
+      },
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -360
+    },
+    {
+      "_id": "req_chat_complex_tier",
+      "_type": "request",
+      "parentId": "fld_chat",
+      "name": "Chat - Complex Tier (Gemini Flash)",
+      "description": "Score >80 -> routes to Gemini gemini-flash-latest.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/chat",
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"prompt\": \"Design a distributed system architecture for a real-time chat application. Analyze the trade-offs, explain in detail how you would handle consistency, and compare at least two approaches.\"\n}"
+      },
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -350
+    },
+    {
+      "_id": "req_chat_explicit_model",
+      "_type": "request",
+      "parentId": "fld_chat",
+      "name": "Chat - Explicit Model Override",
+      "description": "Passing 'model' skips tier auto-routing. gemini* prefix -> Gemini, vendor/model style (contains '/') -> OpenRouter, anything else -> Groq.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/chat",
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"prompt\": \"Hello, how are you?\",\n  \"model\": \"meta-llama/llama-3.3-70b-instruct:free\"\n}"
+      },
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -340
+    },
+    {
+      "_id": "req_usage_me",
+      "_type": "request",
+      "parentId": "fld_usage",
+      "name": "Get My Usage",
+      "description": "",
+      "method": "GET",
+      "url": "{{ _.base_url }}/usage/me",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "body": {},
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -400
+    }
+  ]
+}
