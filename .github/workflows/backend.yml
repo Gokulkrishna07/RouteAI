@@ -3,11 +3,11 @@ name: Backend CI
 on:
   push:
     paths:
-      - "backend/**"
+      - "Backend/**"
 
   pull_request:
     paths:
-      - "backend/**"
+      - "Backend/**"
 
 jobs:
   build-and-test:
@@ -15,7 +15,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: backend
+        working-directory: Backend
 
     steps:
       - name: Checkout
