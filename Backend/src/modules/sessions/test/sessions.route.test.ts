@@ -16,12 +16,14 @@ vi.mock("../sessions.repository", () => ({
 }));
 
 import sessionsRoute from "../sessions.route";
+import authPlugin from "../../../plugins/auth";
 
 async function buildApp() {
   const app = Fastify();
   app.setValidatorCompiler(validatorCompiler);
   app.setSerializerCompiler(serializerCompiler);
   await app.register(fastifyJwt, { secret: "test-secret" });
+  await app.register(authPlugin);
   await app.register(sessionsRoute);
   await app.ready();
   return app;

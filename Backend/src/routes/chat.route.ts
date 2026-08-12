@@ -9,9 +9,12 @@ import {
 } from "../modules/sessions/sessions.repository";
 import { deriveSessionTitle } from "../modules/sessions/sessions.util";
 import { chatSchema } from "../modules/providers/gemini/gemini.schema";
+import { getAuthContext } from "../plugins/auth";
+import { AppError } from "../errors/errorHandler";
 
 const chatRequestSchema = chatSchema.extend({
   sessionId: z.string().uuid().optional(),
+  store: z.boolean().optional(),
 });
 
 type ChatRequestSchema = z.infer<typeof chatRequestSchema>;
@@ -20,35 +23,63 @@ export default async function chatRoute(fastifyInstance: FastifyInstance) {
   fastifyInstance.post<{ Body: ChatRequestSchema }>(
     "/chat",
     {
+      preHandler: fastifyInstance.requireScope("chat:write"),
       schema: {
         body: chatRequestSchema,
       },
     },
     async (request, reply) => {
-      await request.jwtVerify();
-      const userId = request.user.sub;
-      const { sessionId: incomingSessionId, ...providerRequest } = request.body;
+      const auth = getAuthContext(request);
+      const {
+        sessionId: incomingSessionId,
+        store,
+        ...providerRequest
+      } = request.body;
 
-      let sessionId: string;
-      if (incomingSessionId) {
-        await assertSessionOwnership(incomingSessionId, userId);
-        sessionId = incomingSessionId;
-      } else {
-        sessionId = await createSession(userId, deriveSessionTitle(providerRequest.prompt));
+      if (incomingSessionId && store === false) {
+        throw new AppError(
+          "INVALID_STORE_OPTION",
+          400,
+          "store cannot be false when sessionId is provided",
+        );
       }
 
-      await addMessage(sessionId, "user", providerRequest.prompt);
+      const persist = store ?? auth.source === "jwt";
+
+      let sessionId: string | null = null;
+      if (persist) {
+        if (incomingSessionId) {
+          await assertSessionOwnership(incomingSessionId, auth.userId);
+          sessionId = incomingSessionId;
+        } else {
+          sessionId = await createSession(
+            auth.userId,
+            deriveSessionTitle(providerRequest.prompt),
+          );
+        }
+
+        await addMessage(sessionId, "user", providerRequest.prompt);
+      }
 
       const result = await gatewayGenerate(providerRequest);
 
-      await addMessage(sessionId, "assistant", result.response, result.provider, result.model);
+      if (sessionId) {
+        await addMessage(
+          sessionId,
+          "assistant",
+          result.response,
+          result.provider,
+          result.model,
+        );
+      }
 
       try {
         await recordChatUsage({
-          userId,
+          userId: auth.userId,
           provider: result.provider,
           model: result.model,
           usage: result.usage,
+          apiKeyId: auth.apiKeyId,
         });
       } catch (error) {
         request.log.error(error, "Failed to record chat usage");
