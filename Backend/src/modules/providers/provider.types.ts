@@ -1,4 +1,4 @@
-export type ProviderName = "gemini" | "groq" | "openrouter" | "cerebras";
+export type ProviderName = "gemini" | "groq" | "openrouter";
 
 export interface ProviderRequest {
   prompt: string;

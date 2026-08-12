@@ -177,6 +177,49 @@ describe("GeminiClient", () => {
     );
   });
 
+  it("retries on a 503 response and succeeds once the provider recovers", async () => {
+    fetchMock
+      .mockResolvedValueOnce(
+        mockResponse({
+          ok: false,
+          status: 503,
+          statusText: "Service Unavailable",
+          body: { error: "overloaded" },
+        }),
+      )
+      .mockResolvedValueOnce(
+        mockResponse({ ok: true, body: { candidates: [] } }),
+      );
+
+    const client = new GeminiClient({ apiKey: "k", retryDelayMs: 0 });
+    const result = await client.generate({ prompt: "hi" });
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(result.raw).toEqual({ candidates: [] });
+  });
+
+  it("gives up after exhausting retries on repeated 503 responses", async () => {
+    fetchMock.mockResolvedValue(
+      mockResponse({
+        ok: false,
+        status: 503,
+        statusText: "Service Unavailable",
+        body: { error: "overloaded" },
+      }),
+    );
+
+    const client = new GeminiClient({
+      apiKey: "k",
+      maxRetries: 2,
+      retryDelayMs: 0,
+    });
+
+    await expect(client.generate({ prompt: "hi" })).rejects.toThrow(
+      /Gemini request failed: 503 Service Unavailable/,
+    );
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+  });
+
   it("sends generation parameters and prompt in the request body", async () => {
     fetchMock.mockResolvedValue(
       mockResponse({ ok: true, body: { candidates: [] } }),

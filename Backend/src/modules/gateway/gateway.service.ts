@@ -1,7 +1,6 @@
 import { GeminiService } from "../providers/gemini/gemini.service";
 import { GroqService } from "../providers/groq/groq.service";
 import { OpenRouterService } from "../providers/openrouter/openrouter.service";
-import { CerebrasService } from "../providers/cerebras/cerebras.service";
 import { scoreComplexity } from "./complexity.heuristic";
 import {
   FAST_MAX,
@@ -35,9 +34,6 @@ function resolveTier(prompt: string): ComplexityTier {
 function resolveProviderService(provider: TierConfig["provider"]) {
   if (provider === "groq") {
     return new GroqService();
-  }
-  if (provider === "cerebras") {
-    return new CerebrasService();
   }
   if (provider === "openrouter") {
     return new OpenRouterService();
