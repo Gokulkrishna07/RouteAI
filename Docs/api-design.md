@@ -599,5 +599,6 @@ Response — `200 OK`
 - API keys are sent as `x-api-key: amr_...`, or as `Authorization: Bearer amr_...`.
 - Available API key scopes: `chat:write`, `sessions:read`, `sessions:write`, `usage:read`.
 - `refreshToken` is stored in the database and rotated on refresh.
-- Rate limits per minute: 10 on `/login`, `/register`, `/refresh`; 20 for other requests without an API key; 100 with an API key.
+- Rate limits per minute: 10 on `/login`, `/register`, `/refresh`; 20 for other requests without an API key.
+- API key requests pass through two limiters: a global 100 per minute per key, and the key's own `rateLimitPerMinute` bucket (default 60, max 100). The effective limit is the lower of the two, so a default key gets 60.
 - Errors return `{ "error": { "code", "message", "requestId" } }`.
