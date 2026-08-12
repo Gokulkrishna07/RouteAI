@@ -116,6 +116,7 @@ function getHttpErrorCode(statusCode) {
     switch (statusCode) {
         case 400:
             return "BAD_REQUEST";
+        /* v8 ignore next 2 -- unreachable: statusCode 401 is handled earlier in registerErrorHandler */
         case 401:
             return "UNAUTHORIZED";
         case 403:

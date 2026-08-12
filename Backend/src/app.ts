@@ -28,6 +28,8 @@ app.register(fastifyJwt, {
 
 app.register(rateLimitPlugin);
 
+
+
 app.register(healthRoute, { prefix: "/api/v1" });
 app.register(authRoute, { prefix: "/api/v1" });
 app.register(chatRoute, { prefix: "/api/v1" });
