@@ -4,7 +4,6 @@ const scoreComplexityMock = vi.fn();
 const geminiGenerateMock = vi.fn();
 const groqGenerateMock = vi.fn();
 const openRouterGenerateMock = vi.fn();
-const cerebrasGenerateMock = vi.fn();
 
 vi.mock("../complexity.heuristic", () => ({
   scoreComplexity: (...args: unknown[]) => scoreComplexityMock(...args),
@@ -28,16 +27,9 @@ vi.mock("../../providers/openrouter/openrouter.service", () => ({
   }),
 }));
 
-vi.mock("../../providers/cerebras/cerebras.service", () => ({
-  CerebrasService: vi.fn().mockImplementation(function () {
-    return { generate: cerebrasGenerateMock };
-  }),
-}));
-
 import { GeminiService } from "../../providers/gemini/gemini.service";
 import { GroqService } from "../../providers/groq/groq.service";
 import { OpenRouterService } from "../../providers/openrouter/openrouter.service";
-import { CerebrasService } from "../../providers/cerebras/cerebras.service";
 import { gatewayGenerate } from "../gateway.service";
 import { TIER_MODEL_MAP } from "../gateway.config";
 
@@ -47,11 +39,9 @@ describe("gatewayGenerate", () => {
     geminiGenerateMock.mockReset();
     groqGenerateMock.mockReset();
     openRouterGenerateMock.mockReset();
-    cerebrasGenerateMock.mockReset();
     (GeminiService as unknown as ReturnType<typeof vi.fn>).mockClear();
     (GroqService as unknown as ReturnType<typeof vi.fn>).mockClear();
     (OpenRouterService as unknown as ReturnType<typeof vi.fn>).mockClear();
-    (CerebrasService as unknown as ReturnType<typeof vi.fn>).mockClear();
   });
 
   it("routes a very-low-scoring prompt to groq using the simple tier model", async () => {
@@ -61,7 +51,6 @@ describe("gatewayGenerate", () => {
     const result = await gatewayGenerate({ prompt: "hi" });
 
     expect(GroqService).toHaveBeenCalled();
-    expect(CerebrasService).not.toHaveBeenCalled();
     expect(OpenRouterService).not.toHaveBeenCalled();
     expect(GeminiService).not.toHaveBeenCalled();
     expect(groqGenerateMock).toHaveBeenCalledWith({
@@ -71,17 +60,16 @@ describe("gatewayGenerate", () => {
     expect(result).toEqual({ provider: "groq", model: "groq-1.0", response: "ok" });
   });
 
-  it("routes a low-scoring prompt to cerebras using the fast tier model", async () => {
+  it("routes a low-scoring prompt to groq using the fast tier model", async () => {
     scoreComplexityMock.mockReturnValue(30);
-    cerebrasGenerateMock.mockResolvedValue({ provider: "cerebras", model: "llama3.1-8b", response: "ok" });
+    groqGenerateMock.mockResolvedValue({ provider: "groq", model: "llama-3.3-70b-versatile", response: "ok" });
 
     await gatewayGenerate({ prompt: "something slightly complex" });
 
-    expect(CerebrasService).toHaveBeenCalled();
-    expect(GroqService).not.toHaveBeenCalled();
+    expect(GroqService).toHaveBeenCalled();
     expect(OpenRouterService).not.toHaveBeenCalled();
     expect(GeminiService).not.toHaveBeenCalled();
-    expect(cerebrasGenerateMock).toHaveBeenCalledWith({
+    expect(groqGenerateMock).toHaveBeenCalledWith({
       prompt: "something slightly complex",
       model: TIER_MODEL_MAP.fast.model,
     });
@@ -95,7 +83,6 @@ describe("gatewayGenerate", () => {
 
     expect(OpenRouterService).toHaveBeenCalled();
     expect(GroqService).not.toHaveBeenCalled();
-    expect(CerebrasService).not.toHaveBeenCalled();
     expect(GeminiService).not.toHaveBeenCalled();
     expect(openRouterGenerateMock).toHaveBeenCalledWith({
       prompt: "something moderately complex",
@@ -112,7 +99,6 @@ describe("gatewayGenerate", () => {
     expect(GeminiService).toHaveBeenCalled();
     expect(GroqService).not.toHaveBeenCalled();
     expect(OpenRouterService).not.toHaveBeenCalled();
-    expect(CerebrasService).not.toHaveBeenCalled();
     expect(geminiGenerateMock).toHaveBeenCalledWith({
       prompt: "something fairly complex",
       model: TIER_MODEL_MAP.medium.model,

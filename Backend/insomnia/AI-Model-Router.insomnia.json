@@ -45,6 +45,21 @@
       "metaSortKey": 0
     },
     {
+      "_id": "env_production",
+      "_type": "environment",
+      "parentId": "env_base",
+      "name": "Production",
+      "data": {
+        "base_url": "https://routeai-backend-btbb.onrender.com/api/v1"
+      },
+      "dataPropertyOrder": {
+        "&": ["base_url"]
+      },
+      "color": "#65b891",
+      "isPrivate": false,
+      "metaSortKey": 1
+    },
+    {
       "_id": "fld_health",
       "_type": "request_group",
       "parentId": "wrk_ai_model_router",
@@ -230,8 +245,8 @@
       "_id": "req_chat_fast_tier",
       "_type": "request",
       "parentId": "fld_chat",
-      "name": "Chat - Fast Tier (Cerebras)",
-      "description": "Score 21-40 -> routes to Cerebras llama3.1-8b.",
+      "name": "Chat - Fast Tier (Groq)",
+      "description": "Score 21-40 -> routes to Groq llama-3.3-70b-versatile.",
       "method": "POST",
       "url": "{{ _.base_url }}/chat",
       "headers": [

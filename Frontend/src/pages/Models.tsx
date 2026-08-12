@@ -14,7 +14,6 @@ const TOC_LINKS = [
   { label: 'How It Decides', href: '#how-it-decides' },
   { label: 'Gemini', href: '#gemini' },
   { label: 'Groq', href: '#groq' },
-  { label: 'Cerebras', href: '#cerebras' },
   { label: 'OpenRouter', href: '#openrouter' },
   { label: 'Good to Know', href: '#good-to-know' },
 ]
@@ -64,17 +63,6 @@ const MODELS = [
       "Groq is built for raw speed. It's the first model AI Model Router reaches for on short, everyday questions where you just want a fast, no-fuss answer.",
     pickedFor: 'Simple, quick, everyday questions.',
     tryAsking: ['Quick facts or definitions', 'Simple one-line questions', 'Small everyday tasks like a unit conversion'],
-  },
-  {
-    id: 'cerebras',
-    name: 'Cerebras',
-    by: 'Cerebras',
-    icon: <SpeedOutlinedIcon sx={{ fontSize: 20 }} />,
-    tagline: 'The other quick one.',
-    description:
-      'Cerebras is another speed-focused model, used for questions that are a little more involved than the simplest ones but still don’t need heavy reasoning — think short back-and-forth chat.',
-    pickedFor: 'Light, conversational questions that need a snappy reply.',
-    tryAsking: ['Casual back-and-forth chat', 'Short follow-up questions', 'Quick brainstorming on a small idea'],
   },
   {
     id: 'openrouter',

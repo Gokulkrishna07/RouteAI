@@ -38,7 +38,7 @@ const PRINCIPLES = [
   {
     title: 'One doorway, many minds',
     description:
-      'Behind the same simple chat, your message might be handled by Gemini, Groq, Cerebras, or a model chosen through OpenRouter. You never have to manage separate accounts or logins for each one.',
+      'Behind the same simple chat, your message might be handled by Gemini, Groq, or a model chosen through OpenRouter. You never have to manage separate accounts or logins for each one.',
   },
   {
     title: 'A consistent experience',
@@ -57,7 +57,6 @@ const PRINCIPLES = [
 const PROVIDERS = [
   { name: 'Gemini', description: "Google's AI — dependable for detailed, thoughtful answers." },
   { name: 'Groq', description: 'Built for speed, ideal for quick, everyday questions.' },
-  { name: 'Cerebras', description: 'Another fast option, tuned for short back-and-forth chats.' },
   { name: 'OpenRouter', description: 'A gateway to many other AI models, picked automatically for balanced tasks.' },
 ]
 

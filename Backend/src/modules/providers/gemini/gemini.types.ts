@@ -7,6 +7,8 @@ export interface GeminiClientOptions {
   baseUrl?: string;
   defaultModel?: GeminiModel;
   timeoutMs?: number;
+  maxRetries?: number;
+  retryDelayMs?: number;
 }
 
 export interface GeminiGenerateParams {
@@ -33,6 +35,8 @@ export interface GeminiServiceOptions {
   baseUrl?: string;
   defaultModel?: GeminiModel;
   timeoutMs?: number;
+  maxRetries?: number;
+  retryDelayMs?: number;
 }
 
 export type GeminiServiceRequest = ProviderRequest;
