@@ -10,7 +10,7 @@ import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutline
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined'
-import { docsPalette, fonts, fontSizes, type DocsColors, type DocsMode } from '../constants'
+import { ROUTES, docsPalette, fonts, fontSizes, type DocsColors, type DocsMode } from '../constants'
 import { clearSession } from '../lib/session'
 
 export const NAV_HEIGHT = 56
@@ -129,7 +129,7 @@ export function Logo() {
   return (
     <Box
       component={Link}
-      to="/home"
+      to={ROUTES.home}
       sx={{ display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0, textDecoration: 'none' }}
     >
       <Box
@@ -229,7 +229,7 @@ export function LogoutButton() {
 
   const handleLogout = () => {
     clearSession()
-    navigate('/', { replace: true })
+    navigate(ROUTES.login, { replace: true })
   }
 
   return (

@@ -1,9 +1,11 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios'
+import { API_BASE_URL } from '../config/env'
 import { clearSession, getSession, updateTokens } from './session'
 
-const baseURL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000/api/v1'
+const REFRESH_ENDPOINT = '/refresh'
+const UNAUTHORIZED = 401
 
-export const apiClient = axios.create({ baseURL })
+export const apiClient = axios.create({ baseURL: API_BASE_URL })
 
 apiClient.interceptors.request.use((config) => {
   const session = getSession()
@@ -20,7 +22,11 @@ async function refreshAccessToken(): Promise<string | null> {
   if (!session?.refreshToken) return null
 
   try {
-    const response = await axios.post(`${baseURL}/refresh`, { refreshToken: session.refreshToken })
+    // Bare `axios`, not `apiClient`: the refresh call must not re-enter the 401
+    // interceptor below.
+    const response = await axios.post(`${API_BASE_URL}${REFRESH_ENDPOINT}`, {
+      refreshToken: session.refreshToken,
+    })
     const { token, refreshToken } = response.data as { token: string; refreshToken: string }
     updateTokens(token, refreshToken)
     return token
@@ -36,7 +42,7 @@ apiClient.interceptors.response.use(
   async (error: AxiosError) => {
     const originalRequest = error.config as RetriableConfig | undefined
 
-    if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
+    if (error.response?.status === UNAUTHORIZED && originalRequest && !originalRequest._retry) {
       originalRequest._retry = true
       refreshPromise ??= refreshAccessToken().finally(() => {
         refreshPromise = null
