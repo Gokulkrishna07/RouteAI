@@ -30,6 +30,8 @@ async function main() {
       "002-add-refresh-token-columns.sql",
       "003-create-chat-usage-table.sql",
       "004-create-sessions-and-messages.sql",
+      "005-create-api-keys-table.sql",
+      "006-add-api-key-id-to-chat-usage.sql",
     ];
     for (const migration of migrations) {
       await runMigration(migration);

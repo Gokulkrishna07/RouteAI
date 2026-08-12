@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { ROUTES } from './constants'
+import ApiKeys from './pages/ApiKeys'
 import Chat from './pages/Chat'
 import Home from './pages/Home'
 import Login from './pages/Login'
@@ -13,6 +14,7 @@ const PROTECTED_ROUTES = [
   { path: ROUTES.models, element: <Models /> },
   { path: ROUTES.chat, element: <Chat /> },
   { path: ROUTES.chatSession, element: <Chat /> },
+  { path: ROUTES.apiKeys, element: <ApiKeys /> },
 ]
 
 function App() {

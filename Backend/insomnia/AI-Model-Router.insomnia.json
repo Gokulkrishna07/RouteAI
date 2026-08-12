@@ -9,7 +9,7 @@
       "_type": "workspace",
       "parentId": null,
       "name": "AI Model Router API",
-      "description": "Collection covering all backend endpoints: health, auth (register/login/refresh/me/logout), and chat gateway.",
+      "description": "Collection covering all backend endpoints: health, auth (register/login/refresh/me/logout), chat gateway, sessions, usage, and API keys.",
       "scope": "collection"
     },
     {
@@ -20,10 +20,13 @@
       "data": {
         "base_url": "http://127.0.0.1:3000/api/v1",
         "token": "",
-        "refreshToken": ""
+        "refreshToken": "",
+        "apiKey": "",
+        "apiKeyId": "",
+        "sessionId": ""
       },
       "dataPropertyOrder": {
-        "&": ["base_url", "token", "refreshToken"]
+        "&": ["base_url", "token", "refreshToken", "apiKey", "apiKeyId", "sessionId"]
       },
       "color": null,
       "isPrivate": false,
@@ -87,6 +90,15 @@
       "metaSortKey": -100
     },
     {
+      "_id": "fld_sessions",
+      "_type": "request_group",
+      "parentId": "wrk_ai_model_router",
+      "name": "Sessions",
+      "description": "",
+      "environment": {},
+      "metaSortKey": -50
+    },
+    {
       "_id": "fld_usage",
       "_type": "request_group",
       "parentId": "wrk_ai_model_router",
@@ -94,6 +106,15 @@
       "description": "",
       "environment": {},
       "metaSortKey": 0
+    },
+    {
+      "_id": "fld_api_keys",
+      "_type": "request_group",
+      "parentId": "wrk_ai_model_router",
+      "name": "API Keys",
+      "description": "JWT-only. An API key cannot manage API keys.",
+      "environment": {},
+      "metaSortKey": 100
     },
     {
       "_id": "req_health_check",
@@ -342,11 +363,141 @@
       "metaSortKey": -340
     },
     {
+      "_id": "req_chat_new_session",
+      "_type": "request",
+      "parentId": "fld_chat",
+      "name": "Chat - Start New Session",
+      "description": "JWT callers persist by default. The response returns the new sessionId, which is saved to the environment.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/chat",
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"prompt\": \"Explain database indexing.\",\n  \"store\": true\n}"
+      },
+      "parameters": [],
+      "authentication": {},
+      "afterResponseScript": "if (insomnia.response.code === 200) {\n  const data = insomnia.response.json();\n  if (data.data && data.data.sessionId) {\n    insomnia.environment.set('sessionId', data.data.sessionId);\n  }\n}",
+      "metaSortKey": -330
+    },
+    {
+      "_id": "req_chat_existing_session",
+      "_type": "request",
+      "parentId": "fld_chat",
+      "name": "Chat - Continue Session",
+      "description": "Appends to an existing session. The session must belong to the caller, otherwise 404 SESSION_NOT_FOUND.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/chat",
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"prompt\": \"Now compare it to a full table scan.\",\n  \"sessionId\": \"{{ _.sessionId }}\"\n}"
+      },
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -320
+    },
+    {
+      "_id": "req_chat_api_key",
+      "_type": "request",
+      "parentId": "fld_chat",
+      "name": "Chat - With API Key",
+      "description": "Requires the chat:write scope. API key callers do not persist by default; pass store: true to save the exchange.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/chat",
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "x-api-key", "value": "{{ _.apiKey }}" }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"prompt\": \"Hello, how are you?\"\n}"
+      },
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -310
+    },
+    {
+      "_id": "req_sessions_list",
+      "_type": "request",
+      "parentId": "fld_sessions",
+      "name": "List Sessions",
+      "description": "Requires the sessions:read scope. Ordered by updated_at descending.",
+      "method": "GET",
+      "url": "{{ _.base_url }}/sessions",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "body": {},
+      "parameters": [],
+      "authentication": {},
+      "afterResponseScript": "if (insomnia.response.code === 200) {\n  const data = insomnia.response.json();\n  if (data.data && data.data.length) {\n    insomnia.environment.set('sessionId', data.data[0].id);\n  }\n}",
+      "metaSortKey": -400
+    },
+    {
+      "_id": "req_sessions_messages",
+      "_type": "request",
+      "parentId": "fld_sessions",
+      "name": "Get Session Messages",
+      "description": "Requires the sessions:read scope. Ordered by created_at ascending.",
+      "method": "GET",
+      "url": "{{ _.base_url }}/sessions/{{ _.sessionId }}/messages",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "body": {},
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -300
+    },
+    {
+      "_id": "req_sessions_rename",
+      "_type": "request",
+      "parentId": "fld_sessions",
+      "name": "Rename Session",
+      "description": "Requires the sessions:write scope. Title is trimmed, 1-120 characters.",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/sessions/{{ _.sessionId }}",
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"Indexing deep dive\"\n}"
+      },
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -200
+    },
+    {
+      "_id": "req_sessions_delete",
+      "_type": "request",
+      "parentId": "fld_sessions",
+      "name": "Delete Session",
+      "description": "Requires the sessions:write scope. Deletes the session and its messages.",
+      "method": "DELETE",
+      "url": "{{ _.base_url }}/sessions/{{ _.sessionId }}",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "body": {},
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -100
+    },
+    {
       "_id": "req_usage_me",
       "_type": "request",
       "parentId": "fld_usage",
       "name": "Get My Usage",
-      "description": "",
+      "description": "Requires the usage:read scope.",
       "method": "GET",
       "url": "{{ _.base_url }}/usage/me",
       "headers": [
@@ -356,6 +507,133 @@
       "parameters": [],
       "authentication": {},
       "metaSortKey": -400
+    },
+    {
+      "_id": "req_api_keys_create",
+      "_type": "request",
+      "parentId": "fld_api_keys",
+      "name": "Create API Key",
+      "description": "Only 'name' is required. Defaults: all four scopes, rateLimit 60, no expiry, environment live. The raw key is returned only once and is saved to the environment.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api-keys",
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Production server\",\n  \"scopes\": [\"chat:write\", \"sessions:read\", \"sessions:write\", \"usage:read\"],\n  \"rateLimit\": 60,\n  \"expiresInDays\": 90,\n  \"environment\": \"live\"\n}"
+      },
+      "parameters": [],
+      "authentication": {},
+      "afterResponseScript": "if (insomnia.response.code === 201) {\n  const data = insomnia.response.json();\n  insomnia.environment.set('apiKey', data.data.key);\n  insomnia.environment.set('apiKeyId', data.data.id);\n}",
+      "metaSortKey": -400
+    },
+    {
+      "_id": "req_api_keys_list",
+      "_type": "request",
+      "parentId": "fld_api_keys",
+      "name": "List API Keys",
+      "description": "Includes revoked keys, with revokedAt set.",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api-keys",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "body": {},
+      "parameters": [],
+      "authentication": {},
+      "afterResponseScript": "if (insomnia.response.code === 200) {\n  const data = insomnia.response.json();\n  if (data.data && data.data.length) {\n    insomnia.environment.set('apiKeyId', data.data[0].id);\n  }\n}",
+      "metaSortKey": -300
+    },
+    {
+      "_id": "req_api_keys_get",
+      "_type": "request",
+      "parentId": "fld_api_keys",
+      "name": "Get API Key",
+      "description": "The id must be a uuid.",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api-keys/{{ _.apiKeyId }}",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "body": {},
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -200
+    },
+    {
+      "_id": "req_api_keys_update",
+      "_type": "request",
+      "parentId": "fld_api_keys",
+      "name": "Update API Key",
+      "description": "At least one of name, scopes, or rateLimit is required. rateLimit accepts 1-100. A revoked key cannot be updated.",
+      "method": "PATCH",
+      "url": "{{ _.base_url }}/api-keys/{{ _.apiKeyId }}",
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Renamed key\",\n  \"scopes\": [\"chat:write\"],\n  \"rateLimit\": 100\n}"
+      },
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": -100
+    },
+    {
+      "_id": "req_api_keys_rotate",
+      "_type": "request",
+      "parentId": "fld_api_keys",
+      "name": "Rotate API Key",
+      "description": "Issues a replacement inheriting name, scopes, rateLimit, and expiry. The old key's expiry is set to now plus graceSeconds (0-2592000, default 86400); 0 revokes it immediately. The body may be omitted.",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api-keys/{{ _.apiKeyId }}/rotate",
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"graceSeconds\": 3600\n}"
+      },
+      "parameters": [],
+      "authentication": {},
+      "afterResponseScript": "if (insomnia.response.code === 201) {\n  const data = insomnia.response.json();\n  insomnia.environment.set('apiKey', data.data.key);\n  insomnia.environment.set('apiKeyId', data.data.id);\n}",
+      "metaSortKey": 0
+    },
+    {
+      "_id": "req_api_keys_usage",
+      "_type": "request",
+      "parentId": "fld_api_keys",
+      "name": "Get API Key Usage",
+      "description": "Token usage attributed to a single API key.",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api-keys/{{ _.apiKeyId }}/usage",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "body": {},
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": 100
+    },
+    {
+      "_id": "req_api_keys_revoke",
+      "_type": "request",
+      "parentId": "fld_api_keys",
+      "name": "Revoke API Key",
+      "description": "Permanent. A second call returns 409 API_KEY_REVOKED.",
+      "method": "DELETE",
+      "url": "{{ _.base_url }}/api-keys/{{ _.apiKeyId }}",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "body": {},
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": 200
     }
   ]
 }

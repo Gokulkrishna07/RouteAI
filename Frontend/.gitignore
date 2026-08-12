@@ -23,12 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-# Python
-venv/
-.venv/
-__pycache__/
-*.pyc
-
 # Build output
 build/
 
@@ -37,9 +31,9 @@ build/
 # committed because CI and the Vercel build resolve VITE_API_BASE_URL from them.
 .env
 .env.*
-!.env.example
-!.env.test
-!.env.production
+.env.example
+.env.test
+.env.production
 
 # Coverage
 coverage/

@@ -15,6 +15,7 @@ import {
   refreshUser,
   getMyInfo,
 } from "./auth.service";
+import { authRateLimitConfig } from "../../plugins/rateLimit";
 
 export default async function authRoute(fastifyInstance: FastifyInstance) {
   fastifyInstance.post<{ Body: RegisterSchema }>(
@@ -23,6 +24,7 @@ export default async function authRoute(fastifyInstance: FastifyInstance) {
       schema: {
         body: registerSchema,
       },
+      config: authRateLimitConfig,
     },
     async (request, reply) => {
       const { tokens, user } = await registerUser(
@@ -47,6 +49,7 @@ export default async function authRoute(fastifyInstance: FastifyInstance) {
       schema: {
         body: loginSchema,
       },
+      config: authRateLimitConfig,
     },
     async (request, reply) => {
       const { tokens, user } = await loginUser(fastifyInstance, request.body);
@@ -68,6 +71,7 @@ export default async function authRoute(fastifyInstance: FastifyInstance) {
       schema: {
         body: refreshSchema,
       },
+      config: authRateLimitConfig,
     },
     async (request, reply) => {
       const { token, refreshToken, refreshTokenExpiresAt } = await refreshUser(

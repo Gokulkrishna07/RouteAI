@@ -5,6 +5,7 @@ export interface RecordChatUsageInput {
   provider: ProviderName;
   model: string;
   usage?: ProviderUsage;
+  apiKeyId?: string | null;
 }
 
 export interface UsageSummary {
