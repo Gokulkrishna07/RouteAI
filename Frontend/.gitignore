@@ -22,7 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-.env
 
 # Python
 venv/
@@ -30,22 +29,17 @@ venv/
 __pycache__/
 *.pyc
 
-# Node
-node_modules/
-
 # Build output
-dist/
 build/
 
 # Environment
+# Each developer's own `.env` stays local; the mode-specific files below are
+# committed because CI and the Vercel build resolve VITE_API_BASE_URL from them.
 .env
 .env.*
-
-# OS
-.DS_Store
-
-# Logs
-*.log
+!.env.example
+!.env.test
+!.env.production
 
 # Coverage
 coverage/
