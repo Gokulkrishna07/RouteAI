@@ -9,7 +9,10 @@ import HubOutlinedIcon from '@mui/icons-material/HubOutlined'
 import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined'
 import KeyOutlinedIcon from '@mui/icons-material/KeyOutlined'
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
-import { ROUTES, docsColors, fonts, fontSizes, type DocsColors } from '../constants'
+import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
+import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined'
+import { ROUTES, docsPalette, fonts, fontSizes, type DocsColors, type ThemeMode } from '../constants'
+import { useThemeMode } from '../theme'
 import { clearSession } from '../lib/session'
 
 export const NAV_HEIGHT = 56
@@ -59,17 +62,13 @@ const SIDEBAR_SECTIONS = [
   },
 ]
 
-const DOCS_THEME: { c: DocsColors } = { c: docsColors }
-
 /**
- * Accessor for the docs palette.
- *
- * The app ships a single unified dark theme, so this is a constant lookup rather
- * than a context read. It stays hook-shaped (`const { c } = useDocsTheme()`) so
- * call sites are unaffected if a runtime theme ever comes back.
+ * Docs palette for the active theme mode, plus the mode itself for the few places
+ * that need it (the toggle icon, the GitHub sprite inversion).
  */
-export function useDocsTheme(): { c: DocsColors } {
-  return DOCS_THEME
+export function useDocsTheme(): { c: DocsColors; mode: ThemeMode } {
+  const { mode } = useThemeMode()
+  return { c: docsPalette[mode], mode }
 }
 
 export function useScrollSpy(ids: string[]) {
@@ -221,6 +220,22 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   )
 }
 
+/** Switches the whole app between the light and dark palettes. */
+export function ThemeToggle() {
+  const { mode, toggle } = useThemeMode()
+  const isLight = mode === 'light'
+  const label = isLight ? NAV_LABELS.switchToDark : NAV_LABELS.switchToLight
+  const Icon = isLight ? DarkModeOutlinedIcon : LightModeOutlinedIcon
+
+  return (
+    <Tooltip title={label} arrow>
+      <IconButton onClick={toggle} size="small" aria-label={label} sx={{ color: 'inherit' }}>
+        <Icon sx={{ fontSize: DOCS_LAYOUT.navIconSize }} />
+      </IconButton>
+    </Tooltip>
+  )
+}
+
 export function LogoutButton() {
   const { c } = useDocsTheme()
   const navigate = useNavigate()
@@ -244,6 +259,8 @@ export const NAV_LABELS = {
   openNav: 'Open navigation',
   closeNav: 'Close navigation',
   github: 'View source on GitHub',
+  switchToDark: 'Switch to dark mode',
+  switchToLight: 'Switch to light mode',
 } as const
 
 const GITHUB_URL = 'https://github.com'
@@ -263,7 +280,7 @@ export function DocsShell({
   ctaHref: string
   children: ReactNode
 }) {
-  const { c } = useDocsTheme()
+  const { c, mode } = useDocsTheme()
   const sectionIds = useMemo(() => tocLinks.map((link) => link.href.slice(1)), [tocLinks])
   const activeId = useScrollSpy(sectionIds)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
@@ -369,11 +386,19 @@ export function DocsShell({
             size="small"
             sx={{ display: { xs: 'none', sm: 'inline-flex' }, color: c.textSecondary }}
           >
-            {/* The sprite is authored in black, so it is inverted to read on the dark nav. */}
-            <svg width={GITHUB_ICON_SIZE} height={GITHUB_ICON_SIZE} style={{ filter: 'invert(1)' }}>
+            {/* The sprite is authored in black, so it is inverted on the dark nav only. */}
+            <svg
+              width={GITHUB_ICON_SIZE}
+              height={GITHUB_ICON_SIZE}
+              style={{ filter: mode === 'dark' ? 'invert(1)' : 'none' }}
+            >
               <use href={GITHUB_ICON_HREF} />
             </svg>
           </IconButton>
+
+          <Box sx={{ color: c.textSecondary }}>
+            <ThemeToggle />
+          </Box>
 
           <LogoutButton />
 

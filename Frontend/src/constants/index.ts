@@ -1,4 +1,5 @@
 export * from './authTheme'
-export * from './colors'
+export * from './colorUtils'
 export * from './fonts'
+export * from './palette'
 export * from './routes'

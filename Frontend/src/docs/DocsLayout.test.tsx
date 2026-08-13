@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { act, renderHook, screen, waitFor, within } from '@testing-library/react'
 import { renderWithProviders } from '../test/renderWithProviders'
-import { ROUTES, docsColors } from '../constants'
+import { ROUTES, docsPalette, type ThemeMode } from '../constants'
+import { THEME_MODE_STORAGE_KEY, ThemeModeProvider } from '../theme'
 import { getSession, setSession, type Session } from '../lib/session'
-import * as DocsLayoutModule from './DocsLayout'
 import {
   DOCS_LAYOUT,
   DocsShell,
@@ -13,6 +13,7 @@ import {
   NAV_HEIGHT,
   NAV_LABELS,
   SectionHeading,
+  ThemeToggle,
   useDocsTheme,
   useScrollSpy,
 } from './DocsLayout'
@@ -24,45 +25,56 @@ const TOC_LINKS = [
 
 const SHELL_PROPS = { tocLinks: TOC_LINKS, ctaLabel: 'Get started', ctaHref: '/signup' }
 
-function renderShell() {
+const MODES: ThemeMode[] = ['light', 'dark']
+
+function renderShell(mode: ThemeMode = 'dark') {
   return renderWithProviders(
     <DocsShell {...SHELL_PROPS}>
       <p>docs body</p>
     </DocsShell>,
+    { mode },
   )
+}
+
+/** Renders a hook inside the theme provider, in the given mode. */
+function renderInMode<T>(hook: () => T, mode: ThemeMode) {
+  return renderHook(hook, {
+    wrapper: ({ children }) => <ThemeModeProvider initialMode={mode}>{children}</ThemeModeProvider>,
+  })
 }
 
 beforeEach(() => {
   localStorage.clear()
 })
 
-describe('useDocsTheme', () => {
-  it('returns the unified docs palette', () => {
-    const { result } = renderHook(() => useDocsTheme())
-    expect(result.current.c).toBe(docsColors)
-  })
+describe.each(MODES)('useDocsTheme in %s mode', (mode) => {
+  it('returns the palette for the active mode', () => {
+    const { result } = renderInMode(() => useDocsTheme(), mode)
 
-  it('works outside any provider — the palette is a constant, not context', () => {
-    expect(() => renderHook(() => useDocsTheme())).not.toThrow()
-  })
-
-  it('returns a stable reference across renders so consumers do not re-render', () => {
-    const { result, rerender } = renderHook(() => useDocsTheme())
-    const first = result.current
-    rerender()
-    expect(result.current).toBe(first)
+    expect(result.current.mode).toBe(mode)
+    expect(result.current.c).toBe(docsPalette[mode])
   })
 })
 
-describe('unified theme', () => {
-  it('exposes no runtime theme switch', () => {
-    expect(DocsLayoutModule).not.toHaveProperty('ThemeToggle')
-    expect(DocsLayoutModule).not.toHaveProperty('DocsThemeProvider')
+describe('ThemeToggle', () => {
+  it('offers to switch to the opposite mode', () => {
+    renderWithProviders(<ThemeToggle />, { mode: 'dark' })
+    expect(screen.getByRole('button', { name: NAV_LABELS.switchToLight })).toBeInTheDocument()
+
+    renderWithProviders(<ThemeToggle />, { mode: 'light' })
+    expect(screen.getByRole('button', { name: NAV_LABELS.switchToDark })).toBeInTheDocument()
   })
 
-  it('does not persist a theme preference', () => {
-    renderShell()
-    expect(localStorage.length).toBe(0)
+  it('repaints the shell and persists the choice', async () => {
+    const { user } = renderShell('dark')
+    const wordmark = screen.getByText('AI Model Router')
+    expect(wordmark).toHaveStyle({ color: docsPalette.dark.textPrimary })
+
+    await user.click(screen.getByRole('button', { name: NAV_LABELS.switchToLight }))
+
+    expect(wordmark).toHaveStyle({ color: docsPalette.light.textPrimary })
+    expect(localStorage.getItem(THEME_MODE_STORAGE_KEY)).toBe('light')
+    expect(screen.getByRole('button', { name: NAV_LABELS.switchToDark })).toBeInTheDocument()
   })
 })
 
@@ -75,9 +87,9 @@ describe('Logo', () => {
 })
 
 describe('Keyword', () => {
-  it('renders its children in the accent colour', () => {
-    renderWithProviders(<Keyword>router</Keyword>)
-    expect(screen.getByText('router')).toHaveStyle({ color: docsColors.accent })
+  it.each(MODES)('renders its children in the %s accent colour', (mode) => {
+    renderWithProviders(<Keyword>router</Keyword>, { mode })
+    expect(screen.getByText('router')).toHaveStyle({ color: docsPalette[mode].accent })
   })
 })
 

@@ -1,6 +1,7 @@
 import { Link as RouterLink } from 'react-router-dom'
 import { Link, Typography } from '@mui/material'
-import { authColors, authFontSizes, authFontWeights } from '../../../constants'
+import { authFontSizes, authFontWeights } from '../../../constants'
+import { useAppColors } from '../../../theme'
 
 type AuthFooterPromptProps = {
   prompt: string
@@ -14,16 +15,18 @@ type AuthFooterPromptProps = {
  * and middle-clickable.
  */
 function AuthFooterPrompt({ prompt, actionLabel, to }: AuthFooterPromptProps) {
+  const c = useAppColors()
+
   return (
     <Typography
-      sx={{ mt: 3, textAlign: 'center', fontSize: authFontSizes.label, color: authColors.textSecondary }}
+      sx={{ mt: 3, textAlign: 'center', fontSize: authFontSizes.label, color: c.textSecondary }}
     >
       {prompt}{' '}
       <Link
         component={RouterLink}
         to={to}
         underline="hover"
-        sx={{ color: authColors.textPrimary, fontWeight: authFontWeights.medium }}
+        sx={{ color: c.textPrimary, fontWeight: authFontWeights.medium }}
       >
         {actionLabel}
       </Link>

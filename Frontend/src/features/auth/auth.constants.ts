@@ -3,6 +3,15 @@
  * sync — client-side validation exists to give fast feedback, not to replace the
  * server contract.
  */
+import type { ThemeMode } from '../../constants'
+
+/**
+ * The login and signup screens are branded dark: their split-screen artwork only
+ * exists in that palette, so they are pinned rather than following the app-wide
+ * theme mode the user picked elsewhere.
+ */
+export const AUTH_THEME_MODE: ThemeMode = 'dark'
+
 export const AUTH_ENDPOINTS = {
   login: '/login',
   register: '/register',
