@@ -1,41 +1,80 @@
+import { withAlpha } from './colorUtils'
+
 /**
- * Design tokens scoped to the unauthenticated (auth) surfaces.
+ * Base hexes of the dark forest palette. Every translucent token below is derived
+ * from one of these via {@link withAlpha}, so a palette change never has to be
+ * mirrored into a hand-written `rgba(...)` string.
+ */
+const base = {
+  page: '#0A120E',
+  form: '#050A07',
+  aside: '#03100A',
+  input: '#0E1A14',
+  ink: '#000000',
+  paper: '#FFFFFF',
+  green: '#259C63',
+  greenDark: '#10663A',
+  greenLight: '#4FC08A',
+  emerald: '#34D399',
+} as const
+
+/** Opacities shared across the overlay/tint tokens. */
+const alpha = {
+  hairline: 0.08,
+  tint: 0.1,
+  softTint: 0.12,
+  badge: 0.3,
+  focus: 0.6,
+  scrim: 0.85,
+} as const
+
+/**
+ * The app's design tokens.
  *
- * These screens deliberately use a dark forest palette that does not derive from
- * the light MUI theme in `src/theme.ts`, so they get their own token set rather
- * than polluting the shared `colors` / `fontSizes` scales used by the app shell.
+ * Originally scoped to the unauthenticated screens, this dark forest palette is now
+ * the single source of truth for the whole app: the shared `colors` scale and the MUI
+ * theme both derive from it (see `src/constants/colors.ts` and `src/theme.ts`).
  */
 export const authColors = {
-  pageBg: '#0A120E',
-  formBg: '#050A07',
-  asideBg: '#03100A',
-  inputBg: '#0E1A14',
+  pageBg: base.page,
+  formBg: base.form,
+  asideBg: base.aside,
+  inputBg: base.input,
+  /** Translucent page background for sticky/blurred surfaces such as the top nav. */
+  scrimBg: withAlpha(base.page, alpha.scrim),
 
-  cardBorder: 'rgba(255, 255, 255, 0.08)',
+  cardBorder: withAlpha(base.paper, alpha.hairline),
   cardGlow: '0 25px 50px rgba(0, 0, 0, 0.5), 0 0 60px rgba(35, 140, 88, 0.25)',
 
-  textPrimary: '#FFFFFF',
+  textPrimary: base.paper,
   textSecondary: '#8F9B94',
   textLabel: '#CCCCCC',
   textAside: '#A0C4B2',
-  textInverse: '#000000',
+  textInverse: base.ink,
 
   danger: '#FF4D4F',
+  success: base.emerald,
+  successBg: withAlpha(base.emerald, alpha.softTint),
 
   divider: '#333333',
   iconMuted: '#666666',
 
-  orbPrimary: '#259C63',
-  orbSecondary: '#10663A',
+  orbPrimary: base.green,
+  orbSecondary: base.greenDark,
+  /** Lighter green used wherever a palette needs a `light` variant of the primary. */
+  orbPrimaryLight: base.greenLight,
 
-  stepActiveBg: '#FFFFFF',
-  stepIdleBg: 'rgba(255, 255, 255, 0.10)',
-  stepIdleBadgeBg: 'rgba(255, 255, 255, 0.30)',
+  /** Background for code blocks and other inset "terminal" surfaces. */
+  codeBg: base.ink,
 
-  submitBg: '#FFFFFF',
+  stepActiveBg: base.paper,
+  stepIdleBg: withAlpha(base.paper, alpha.tint),
+  stepIdleBadgeBg: withAlpha(base.paper, alpha.badge),
+
+  submitBg: base.paper,
   submitHoverBg: '#E0E0E0',
 
-  focusRing: 'rgba(37, 156, 99, 0.6)',
+  focusRing: withAlpha(base.green, alpha.focus),
 } as const
 
 export const authFontSizes = {
@@ -71,6 +110,15 @@ export const authLayout = {
   controlRadius: 2,
   submitIconSize: 24,
   adornmentIconSize: 18,
+} as const
+
+/** Sizing applied to MUI controls globally by `src/theme.ts`. */
+export const controlSizing = {
+  /** Corner radius of outlined inputs, in px. */
+  inputRadius: 10,
+  inputPadding: '14px 16px',
+  /** Width of the inset shadow used to repaint Chrome's autofill background, in px. */
+  autofillInsetWidth: 1000,
 } as const
 
 export const authMotion = {

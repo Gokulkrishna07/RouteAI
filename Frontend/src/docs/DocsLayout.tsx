@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Box, Typography, InputBase, Button, Drawer, IconButton, Tooltip } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
@@ -9,65 +9,67 @@ import HubOutlinedIcon from '@mui/icons-material/HubOutlined'
 import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined'
 import KeyOutlinedIcon from '@mui/icons-material/KeyOutlined'
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
-import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
-import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined'
-import { ROUTES, docsPalette, fonts, fontSizes, type DocsColors, type DocsMode } from '../constants'
+import { ROUTES, docsColors, fonts, fontSizes, type DocsColors } from '../constants'
 import { clearSession } from '../lib/session'
 
 export const NAV_HEIGHT = 56
-const STORAGE_KEY = 'docs-theme-mode'
+
+/** Fixed dimensions of the docs chrome, in px unless noted. */
+export const DOCS_LAYOUT = {
+  shellMaxWidth: 1400,
+  contentMaxWidth: 800,
+  sidebarWidth: 240,
+  tocWidth: 220,
+  mobileDrawerWidth: 280,
+  searchMaxWidth: 360,
+  logoSize: 26,
+  logoFontSize: 13,
+  navIconSize: 19,
+  searchIconSize: 17,
+  sidebarIconSize: 16,
+  /** Extra offset above a heading when it is scrolled to via the TOC. */
+  headingScrollMargin: 24,
+  /** Slack added to the scroll-spy root margin so the active link flips early. */
+  scrollSpyOffset: 8,
+  /** Fraction of the viewport, from the bottom, ignored by the scroll spy. */
+  scrollSpyBottomInset: '70%',
+  activeTocMarkerOffset: -17,
+} as const
 
 const SIDEBAR_SECTIONS = [
   {
     title: 'Overview',
-    items: [{ label: 'Introduction', to: '/home', icon: <DescriptionOutlinedIcon sx={{ fontSize: 16 }} /> }],
+    items: [
+      { label: 'Introduction', to: '/home', icon: <DescriptionOutlinedIcon sx={{ fontSize: DOCS_LAYOUT.sidebarIconSize }} /> },
+    ],
   },
   {
     title: 'Models',
-    items: [{ label: 'All Models', to: '/models', icon: <HubOutlinedIcon sx={{ fontSize: 16 }} /> }],
+    items: [{ label: 'All Models', to: '/models', icon: <HubOutlinedIcon sx={{ fontSize: DOCS_LAYOUT.sidebarIconSize }} /> }],
   },
   {
     title: 'Chat',
-    items: [{ label: 'Open Chat', to: '/chat', icon: <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: 16 }} /> }],
+    items: [
+      { label: 'Open Chat', to: '/chat', icon: <ChatBubbleOutlineOutlinedIcon sx={{ fontSize: DOCS_LAYOUT.sidebarIconSize }} /> },
+    ],
   },
   {
     title: 'Developers',
-    items: [{ label: 'API Keys', to: ROUTES.apiKeys, icon: <KeyOutlinedIcon sx={{ fontSize: 16 }} /> }],
+    items: [{ label: 'API Keys', to: ROUTES.apiKeys, icon: <KeyOutlinedIcon sx={{ fontSize: DOCS_LAYOUT.sidebarIconSize }} /> }],
   },
 ]
 
-function getInitialMode(): DocsMode {
-  if (typeof window === 'undefined') return 'light'
-  const stored = window.localStorage.getItem(STORAGE_KEY)
-  if (stored === 'light' || stored === 'dark') return stored
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-}
+const DOCS_THEME: { c: DocsColors } = { c: docsColors }
 
-const DocsThemeContext = createContext<{ mode: DocsMode; c: DocsColors; toggle: () => void } | null>(null)
-
-export function useDocsTheme() {
-  const ctx = useContext(DocsThemeContext)
-  if (!ctx) throw new Error('useDocsTheme must be used within a DocsThemeProvider')
-  return ctx
-}
-
-export function DocsThemeProvider({ children }: { children: ReactNode }) {
-  const [mode, setMode] = useState<DocsMode>(getInitialMode)
-
-  useEffect(() => {
-    window.localStorage.setItem(STORAGE_KEY, mode)
-  }, [mode])
-
-  const value = useMemo(
-    () => ({
-      mode,
-      c: docsPalette[mode],
-      toggle: () => setMode((prev) => (prev === 'light' ? 'dark' : 'light')),
-    }),
-    [mode],
-  )
-
-  return <DocsThemeContext.Provider value={value}>{children}</DocsThemeContext.Provider>
+/**
+ * Accessor for the docs palette.
+ *
+ * The app ships a single unified dark theme, so this is a constant lookup rather
+ * than a context read. It stays hook-shaped (`const { c } = useDocsTheme()`) so
+ * call sites are unaffected if a runtime theme ever comes back.
+ */
+export function useDocsTheme(): { c: DocsColors } {
+  return DOCS_THEME
 }
 
 export function useScrollSpy(ids: string[]) {
@@ -84,7 +86,7 @@ export function useScrollSpy(ids: string[]) {
         }
       },
       {
-        rootMargin: `-${NAV_HEIGHT + 8}px 0px -70% 0px`,
+        rootMargin: `-${NAV_HEIGHT + DOCS_LAYOUT.scrollSpyOffset}px 0px -${DOCS_LAYOUT.scrollSpyBottomInset} 0px`,
         threshold: 0,
       },
     )
@@ -103,7 +105,7 @@ export function SectionHeading({ id, children, mt = 7 }: { id: string; children:
       id={id}
       component="h2"
       sx={{
-        scrollMarginTop: NAV_HEIGHT + 24,
+        scrollMarginTop: NAV_HEIGHT + DOCS_LAYOUT.headingScrollMargin,
         fontFamily: fonts.heading,
         fontSize: fontSizes.h2,
         fontWeight: 700,
@@ -139,8 +141,8 @@ export function Logo() {
     >
       <Box
         sx={{
-          width: 26,
-          height: 26,
+          width: DOCS_LAYOUT.logoSize,
+          height: DOCS_LAYOUT.logoSize,
           borderRadius: 1.25,
           bgcolor: c.textPrimary,
           display: 'flex',
@@ -148,7 +150,9 @@ export function Logo() {
           justifyContent: 'center',
         }}
       >
-        <Typography sx={{ color: c.bg, fontWeight: 800, fontSize: 13, fontFamily: fonts.heading, lineHeight: 1 }}>
+        <Typography
+          sx={{ color: c.bg, fontWeight: 800, fontSize: DOCS_LAYOUT.logoFontSize, fontFamily: fonts.heading, lineHeight: 1 }}
+        >
           AR
         </Typography>
       </Box>
@@ -217,17 +221,6 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   )
 }
 
-export function ThemeToggle() {
-  const { mode, toggle } = useDocsTheme()
-  return (
-    <Tooltip title={mode === 'light' ? 'Switch to dark mode' : 'Switch to light mode'} arrow>
-      <IconButton onClick={toggle} size="small" sx={{ color: 'inherit' }}>
-        {mode === 'light' ? <DarkModeOutlinedIcon sx={{ fontSize: 19 }} /> : <LightModeOutlinedIcon sx={{ fontSize: 19 }} />}
-      </IconButton>
-    </Tooltip>
-  )
-}
-
 export function LogoutButton() {
   const { c } = useDocsTheme()
   const navigate = useNavigate()
@@ -240,11 +233,22 @@ export function LogoutButton() {
   return (
     <Tooltip title="Log out" arrow>
       <IconButton onClick={handleLogout} size="small" sx={{ color: c.textSecondary }}>
-        <LogoutOutlinedIcon sx={{ fontSize: 19 }} />
+        <LogoutOutlinedIcon sx={{ fontSize: DOCS_LAYOUT.navIconSize }} />
       </IconButton>
     </Tooltip>
   )
 }
+
+/** Accessible names for the icon-only nav controls. */
+export const NAV_LABELS = {
+  openNav: 'Open navigation',
+  closeNav: 'Close navigation',
+  github: 'View source on GitHub',
+} as const
+
+const GITHUB_URL = 'https://github.com'
+const GITHUB_ICON_HREF = '/icons.svg#github-icon'
+const GITHUB_ICON_SIZE = 18
 
 type TocLink = { label: string; href: string }
 
@@ -259,7 +263,7 @@ export function DocsShell({
   ctaHref: string
   children: ReactNode
 }) {
-  const { c, mode } = useDocsTheme()
+  const { c } = useDocsTheme()
   const sectionIds = useMemo(() => tocLinks.map((link) => link.href.slice(1)), [tocLinks])
   const activeId = useScrollSpy(sectionIds)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
@@ -308,6 +312,7 @@ export function DocsShell({
         >
           <IconButton
             onClick={() => setMobileNavOpen(true)}
+            aria-label={NAV_LABELS.openNav}
             sx={{ display: { xs: 'inline-flex', md: 'none' }, color: c.textSecondary }}
             size="small"
           >
@@ -322,7 +327,7 @@ export function DocsShell({
               display: { xs: 'none', sm: 'flex' },
               alignItems: 'center',
               gap: 1,
-              maxWidth: 360,
+              maxWidth: DOCS_LAYOUT.searchMaxWidth,
               bgcolor: c.surface,
               border: `1px solid ${c.border}`,
               borderRadius: 1.5,
@@ -332,7 +337,7 @@ export function DocsShell({
               '&:focus-within': { borderColor: c.accent },
             }}
           >
-            <SearchIcon sx={{ fontSize: 17, color: c.textMuted }} />
+            <SearchIcon sx={{ fontSize: DOCS_LAYOUT.searchIconSize, color: c.textMuted }} />
             <InputBase
               inputRef={searchInputRef}
               placeholder="Search docs..."
@@ -357,20 +362,18 @@ export function DocsShell({
 
           <IconButton
             component="a"
-            href="https://github.com"
+            href={GITHUB_URL}
             target="_blank"
             rel="noreferrer"
+            aria-label={NAV_LABELS.github}
             size="small"
             sx={{ display: { xs: 'none', sm: 'inline-flex' }, color: c.textSecondary }}
           >
-            <svg width="18" height="18" style={{ filter: mode === 'dark' ? 'invert(1)' : 'none' }}>
-              <use href="/icons.svg#github-icon" />
+            {/* The sprite is authored in black, so it is inverted to read on the dark nav. */}
+            <svg width={GITHUB_ICON_SIZE} height={GITHUB_ICON_SIZE} style={{ filter: 'invert(1)' }}>
+              <use href={GITHUB_ICON_HREF} />
             </svg>
           </IconButton>
-
-          <Box sx={{ color: c.textSecondary }}>
-            <ThemeToggle />
-          </Box>
 
           <LogoutButton />
 
@@ -396,10 +399,15 @@ export function DocsShell({
       </Box>
 
       <Drawer anchor="left" open={mobileNavOpen} onClose={() => setMobileNavOpen(false)}>
-        <Box sx={{ width: 280, py: 2, bgcolor: c.bg, height: '100%' }}>
+        <Box sx={{ width: DOCS_LAYOUT.mobileDrawerWidth, py: 2, bgcolor: c.bg, height: '100%' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2, mb: 2 }}>
             <Logo />
-            <IconButton size="small" onClick={() => setMobileNavOpen(false)} sx={{ color: c.textSecondary }}>
+            <IconButton
+              size="small"
+              onClick={() => setMobileNavOpen(false)}
+              aria-label={NAV_LABELS.closeNav}
+              sx={{ color: c.textSecondary }}
+            >
               <CloseIcon fontSize="small" />
             </IconButton>
           </Box>
@@ -409,13 +417,13 @@ export function DocsShell({
         </Box>
       </Drawer>
 
-      <Box sx={{ display: 'flex', maxWidth: 1400, mx: 'auto' }}>
+      <Box sx={{ display: 'flex', maxWidth: DOCS_LAYOUT.shellMaxWidth, mx: 'auto' }}>
         {/* Left sidebar */}
         <Box
           component="nav"
           sx={{
             display: { xs: 'none', md: 'block' },
-            width: 240,
+            width: DOCS_LAYOUT.sidebarWidth,
             flexShrink: 0,
             position: 'sticky',
             top: NAV_HEIGHT,
@@ -430,7 +438,7 @@ export function DocsShell({
         </Box>
 
         {/* Main content */}
-        <Box component="main" sx={{ flex: 1, minWidth: 0, px: { xs: 2.5, md: 5 }, py: 4, maxWidth: 800 }}>
+        <Box component="main" sx={{ flex: 1, minWidth: 0, px: { xs: 2.5, md: 5 }, py: 4, maxWidth: DOCS_LAYOUT.contentMaxWidth }}>
           {children}
         </Box>
 
@@ -439,7 +447,7 @@ export function DocsShell({
           component="aside"
           sx={{
             display: { xs: 'none', lg: 'block' },
-            width: 220,
+            width: DOCS_LAYOUT.tocWidth,
             flexShrink: 0,
             position: 'sticky',
             top: NAV_HEIGHT,
@@ -483,7 +491,7 @@ export function DocsShell({
                       ? {
                           content: '""',
                           position: 'absolute',
-                          left: -17,
+                          left: DOCS_LAYOUT.activeTocMarkerOffset,
                           top: '15%',
                           height: '70%',
                           width: '2px',

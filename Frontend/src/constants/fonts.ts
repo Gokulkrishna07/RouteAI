@@ -11,4 +11,6 @@ export const fontSizes = {
   body: '0.9375rem',
   small: '0.8125rem',
   tiny: '0.6875rem',
+  /** Text size of MUI inputs and buttons, applied globally by `src/theme.ts`. */
+  control: '1.05rem',
 } as const

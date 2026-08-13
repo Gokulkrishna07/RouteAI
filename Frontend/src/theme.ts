@@ -1,9 +1,11 @@
 import { createTheme } from '@mui/material/styles'
-import { colors, fonts } from './constants'
+import { colors, controlSizing, fonts, fontSizes } from './constants'
 
 const theme = createTheme({
+  // The app ships a single dark theme; `mode` must match the tokens below so MUI
+  // derives contrast text, dividers and action states against a dark surface.
   palette: {
-    mode: 'light',
+    mode: 'dark',
     primary: {
       main: colors.primary,
       dark: colors.primaryDark,
@@ -15,6 +17,7 @@ const theme = createTheme({
     },
     background: {
       default: colors.background,
+      paper: colors.surface,
     },
   },
   typography: {
@@ -24,15 +27,17 @@ const theme = createTheme({
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          borderRadius: 10,
-          fontSize: '1.05rem',
+          borderRadius: controlSizing.inputRadius,
+          fontSize: fontSizes.control,
           backgroundColor: 'transparent',
         },
         input: {
-          padding: '14px 16px',
+          padding: controlSizing.inputPadding,
           backgroundColor: 'transparent',
+          // Chrome paints its own autofill background; repaint it with the input
+          // surface so autofilled text stays readable against the dark theme.
           '&:-webkit-autofill': {
-            WebkitBoxShadow: `0 0 0 1000px ${colors.white} inset`,
+            WebkitBoxShadow: `0 0 0 ${controlSizing.autofillInsetWidth}px ${colors.surface} inset`,
             WebkitTextFillColor: colors.textPrimary,
             caretColor: colors.textPrimary,
           },
@@ -46,7 +51,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           textTransform: 'none',
-          fontSize: '1.05rem',
+          fontSize: fontSizes.control,
           fontWeight: 600,
         },
       },

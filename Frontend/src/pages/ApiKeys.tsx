@@ -6,7 +6,6 @@ import { fonts, fontSizes } from '../constants'
 import { API_BASE_URL } from '../config/env'
 import {
   DocsShell,
-  DocsThemeProvider,
   Keyword,
   NAV_HEIGHT,
   SectionHeading,
@@ -127,7 +126,7 @@ function EmptyState({ onCreate }: { onCreate: () => void }) {
   )
 }
 
-function ApiKeysContent() {
+function ApiKeys() {
   const { c } = useDocsTheme()
   const { keys, loading, error, create, revoke, rotate } = useApiKeys()
 
@@ -327,14 +326,6 @@ function ApiKeysContent() {
         onClose={closeRotate}
       />
     </DocsShell>
-  )
-}
-
-function ApiKeys() {
-  return (
-    <DocsThemeProvider>
-      <ApiKeysContent />
-    </DocsThemeProvider>
   )
 }
 

@@ -9,7 +9,7 @@ import AddCommentOutlinedIcon from '@mui/icons-material/AddCommentOutlined'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import { fonts, fontSizes } from '../constants'
 import type { DocsColors } from '../constants'
-import { DocsThemeProvider, Logo, LogoutButton, ThemeToggle, useDocsTheme } from '../docs/DocsLayout'
+import { Logo, LogoutButton, useDocsTheme } from '../docs/DocsLayout'
 import { apiClient, getErrorMessage } from '../lib/apiClient'
 import { getSession } from '../lib/session'
 import {
@@ -346,7 +346,7 @@ function SessionListContent({
   )
 }
 
-function ChatContent() {
+function Chat() {
   const { c } = useDocsTheme()
   const navigate = useNavigate()
   const { sessionId: activeSessionId } = useParams<{ sessionId: string }>()
@@ -506,7 +506,6 @@ function ChatContent() {
               {session.user.name}
             </Typography>
           )}
-          <ThemeToggle />
           <LogoutButton />
         </Box>
 
@@ -656,14 +655,6 @@ function ChatContent() {
         </Box>
       </Box>
     </Box>
-  )
-}
-
-function Chat() {
-  return (
-    <DocsThemeProvider>
-      <ChatContent />
-    </DocsThemeProvider>
   )
 }
 
