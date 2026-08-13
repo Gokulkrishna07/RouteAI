@@ -194,9 +194,11 @@ describe('DocsShell', () => {
 
   it('lists every table-of-contents link', () => {
     renderShell()
+    // Scoped to the TOC aside: a heading label may also name a sidebar route.
+    const toc = within(screen.getByRole('complementary'))
 
     for (const link of TOC_LINKS) {
-      expect(screen.getByRole('link', { name: link.label })).toHaveAttribute('href', link.href)
+      expect(toc.getByRole('link', { name: link.label })).toHaveAttribute('href', link.href)
     }
   })
 

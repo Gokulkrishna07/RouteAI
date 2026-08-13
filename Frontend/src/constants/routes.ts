@@ -12,6 +12,7 @@ export const ROUTES = {
   chat: '/chat',
   chatSession: '/chat/:sessionId',
   apiKeys: '/api-keys',
+  usage: '/usage',
 } as const
 
 export type RoutePath = (typeof ROUTES)[keyof typeof ROUTES]
