@@ -15,6 +15,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Trigger Vercel Deployment
+      - name: Trigger Netlify Deployment
         run: |
-          curl -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"
+          curl -X POST "${{ secrets.NETLIFY_DEPLOY_HOOK }}"
