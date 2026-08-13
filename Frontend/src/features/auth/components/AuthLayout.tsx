@@ -1,11 +1,7 @@
 import type { ReactNode } from 'react'
 import { Box, Typography } from '@mui/material'
-import {
-  authColors,
-  authFontSizes,
-  authFontWeights,
-  authLayout as layout,
-} from '../../../constants'
+import { authFontSizes, authFontWeights, authLayout as layout } from '../../../constants'
+import { useAppColors } from '../../../theme'
 import AuthAside from './AuthAside'
 
 type AuthLayoutProps = {
@@ -22,6 +18,8 @@ type AuthLayoutProps = {
  * left, form column on the right.
  */
 function AuthLayout({ title, subtitle, activeStep, steps, children }: AuthLayoutProps) {
+  const c = useAppColors()
+
   return (
     <Box
       sx={{
@@ -31,7 +29,7 @@ function AuthLayout({ title, subtitle, activeStep, steps, children }: AuthLayout
         minHeight: '100vh',
         width: '100%',
         p: 2,
-        bgcolor: authColors.pageBg,
+        bgcolor: c.pageBg,
       }}
     >
       <Box
@@ -43,8 +41,8 @@ function AuthLayout({ title, subtitle, activeStep, steps, children }: AuthLayout
           // form column defines the height so long error states never clip.
           height: { xs: 'auto', md: layout.cardHeight },
           borderRadius: layout.cardRadius,
-          border: `1px solid ${authColors.cardBorder}`,
-          boxShadow: authColors.cardGlow,
+          border: `1px solid ${c.cardBorder}`,
+          boxShadow: c.cardGlow,
           overflow: 'hidden',
         }}
       >
@@ -57,7 +55,7 @@ function AuthLayout({ title, subtitle, activeStep, steps, children }: AuthLayout
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
-            bgcolor: authColors.formBg,
+            bgcolor: c.formBg,
             p: { xs: 3, sm: 6 },
             overflowY: 'auto',
           }}
@@ -69,13 +67,13 @@ function AuthLayout({ title, subtitle, activeStep, steps, children }: AuthLayout
                 sx={{
                   fontSize: authFontSizes.formTitle,
                   fontWeight: authFontWeights.medium,
-                  color: authColors.textPrimary,
+                  color: c.textPrimary,
                   mb: 1,
                 }}
               >
                 {title}
               </Typography>
-              <Typography sx={{ fontSize: authFontSizes.formBody, color: authColors.textSecondary }}>
+              <Typography sx={{ fontSize: authFontSizes.formBody, color: c.textSecondary }}>
                 {subtitle}
               </Typography>
             </Box>

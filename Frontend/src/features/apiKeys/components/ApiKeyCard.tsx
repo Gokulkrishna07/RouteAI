@@ -1,18 +1,19 @@
 import { useState } from 'react'
 import { Box, CircularProgress, IconButton, Menu, MenuItem, Typography } from '@mui/material'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
-import { fonts, fontSizes } from '../../../constants'
+import { fonts, fontSizes, type DocsColors } from '../../../constants'
 import { useDocsTheme } from '../../../docs/DocsLayout'
 import { getErrorMessage } from '../../../lib/apiClient'
 import { fetchApiKeyUsage, getApiKeyStatus, maskApiKey, type ApiKey, type ApiKeyUsage } from '../../../lib/apiKeys'
 import { REQUEST_ERRORS, SCOPE_OPTIONS, STATUS_LABELS } from '../apiKeys.constants'
 import { formatCount, formatDate } from '../apiKeys.format'
 
-const STATUS_COLORS = {
-  active: { bg: 'rgba(5, 150, 105, 0.12)', text: '#059669' },
-  expired: { bg: 'rgba(217, 119, 6, 0.12)', text: '#D97706' },
-  revoked: { bg: 'rgba(220, 38, 38, 0.12)', text: '#DC2626' },
-} as const
+/** Maps a key status onto the palette tokens that express it. */
+const STATUS_TOKENS = {
+  active: { bg: 'successBg', text: 'success' },
+  expired: { bg: 'warningBg', text: 'warning' },
+  revoked: { bg: 'dangerBg', text: 'danger' },
+} as const satisfies Record<string, { bg: keyof DocsColors; text: keyof DocsColors }>
 
 function scopeLabel(scope: string): string {
   return SCOPE_OPTIONS.find((option) => option.value === scope)?.label ?? scope
@@ -44,7 +45,7 @@ export function ApiKeyCard({
   const [usageError, setUsageError] = useState<string | null>(null)
 
   const status = getApiKeyStatus(apiKey)
-  const statusColor = STATUS_COLORS[status]
+  const statusToken = STATUS_TOKENS[status]
   const isActive = status === 'active'
 
   const closeMenu = () => setMenuAnchor(null)
@@ -92,8 +93,8 @@ export function ApiKeyCard({
                 px: 1,
                 py: 0.125,
                 borderRadius: 1,
-                bgcolor: statusColor.bg,
-                color: statusColor.text,
+                bgcolor: c[statusToken.bg],
+                color: c[statusToken.text],
                 fontSize: fontSizes.tiny,
                 fontWeight: 700,
               }}
@@ -148,7 +149,7 @@ export function ApiKeyCard({
               onRevoke(apiKey)
             }}
             disabled={status === 'revoked'}
-            sx={{ fontSize: fontSizes.small, color: '#DC2626' }}
+            sx={{ fontSize: fontSizes.small, color: c.danger }}
           >
             Revoke
           </MenuItem>
@@ -195,7 +196,7 @@ export function ApiKeyCard({
       ) : null}
 
       {usageError ? (
-        <Typography sx={{ fontSize: fontSizes.small, color: '#DC2626', mt: 2 }}>{usageError}</Typography>
+        <Typography sx={{ fontSize: fontSizes.small, color: c.danger, mt: 2 }}>{usageError}</Typography>
       ) : null}
 
       {usage ? (

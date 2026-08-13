@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { IconButton } from '@mui/material'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
-import { authColors, authLayout } from '../../../constants'
+import { authLayout } from '../../../constants'
+import { useAppColors } from '../../../theme'
 import {
   HIDE_PASSWORD_LABEL,
   PASSWORD_MAX_LENGTH,
@@ -20,6 +21,7 @@ type AuthPasswordFieldProps = Omit<AuthFieldProps, 'type' | 'endAdornment' | 'ma
  * surrounding form.
  */
 function AuthPasswordField(props: AuthPasswordFieldProps) {
+  const c = useAppColors()
   const [isVisible, setIsVisible] = useState(false)
   const ToggleIcon = isVisible ? VisibilityIcon : VisibilityOffIcon
 
@@ -35,7 +37,7 @@ function AuthPasswordField(props: AuthPasswordFieldProps) {
           aria-label={isVisible ? HIDE_PASSWORD_LABEL : SHOW_PASSWORD_LABEL}
           aria-pressed={isVisible}
           onClick={() => setIsVisible((visible) => !visible)}
-          sx={{ color: authColors.iconMuted, p: 0.25 }}
+          sx={{ color: c.iconMuted, p: 0.25 }}
         >
           <ToggleIcon sx={{ fontSize: authLayout.adornmentIconSize }} />
         </IconButton>

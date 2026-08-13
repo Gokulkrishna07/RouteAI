@@ -9,7 +9,7 @@ import AddCommentOutlinedIcon from '@mui/icons-material/AddCommentOutlined'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import { fonts, fontSizes } from '../constants'
 import type { DocsColors } from '../constants'
-import { DocsThemeProvider, Logo, LogoutButton, ThemeToggle, useDocsTheme } from '../docs/DocsLayout'
+import { Logo, LogoutButton, ThemeToggle, useDocsTheme } from '../docs/DocsLayout'
 import { apiClient, getErrorMessage } from '../lib/apiClient'
 import { getSession } from '../lib/session'
 import {
@@ -246,7 +246,7 @@ function SessionRow({
       </IconButton>
       <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={closeMenu}>
         <MenuItem onClick={startRename}>Rename</MenuItem>
-        <MenuItem onClick={() => void handleDelete()} sx={{ color: '#EF4444' }}>
+        <MenuItem onClick={() => void handleDelete()} sx={{ color: c.danger }}>
           Delete
         </MenuItem>
       </Menu>
@@ -346,7 +346,7 @@ function SessionListContent({
   )
 }
 
-function ChatContent() {
+function Chat() {
   const { c } = useDocsTheme()
   const navigate = useNavigate()
   const { sessionId: activeSessionId } = useParams<{ sessionId: string }>()
@@ -607,7 +607,7 @@ function ChatContent() {
               </Box>
             )}
 
-            {error && <Typography sx={{ fontSize: fontSizes.small, color: '#EF4444' }}>{error}</Typography>}
+            {error && <Typography sx={{ fontSize: fontSizes.small, color: c.danger }}>{error}</Typography>}
 
             <div ref={bottomRef} />
           </Box>
@@ -656,14 +656,6 @@ function ChatContent() {
         </Box>
       </Box>
     </Box>
-  )
-}
-
-function Chat() {
-  return (
-    <DocsThemeProvider>
-      <ChatContent />
-    </DocsThemeProvider>
   )
 }
 

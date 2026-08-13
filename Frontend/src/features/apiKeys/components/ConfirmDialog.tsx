@@ -61,12 +61,12 @@ export function ConfirmDialog({
           disableElevation
           disabled={busy}
           sx={{
-            bgcolor: destructive ? '#DC2626' : c.textPrimary,
-            color: destructive ? '#FFFFFF' : c.bg,
+            bgcolor: destructive ? c.danger : c.textPrimary,
+            color: destructive ? c.dangerText : c.bg,
             fontSize: fontSizes.small,
             borderRadius: 1.5,
             px: 2.5,
-            '&:hover': { bgcolor: destructive ? '#B91C1C' : c.textPrimary, opacity: 0.9 },
+            '&:hover': { bgcolor: destructive ? c.dangerStrong : c.textPrimary, opacity: 0.9 },
           }}
         >
           {confirmLabel}

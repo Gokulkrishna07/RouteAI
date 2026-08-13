@@ -2,10 +2,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, screen, waitFor } from '@testing-library/react'
 import { AxiosError } from 'axios'
 import { renderWithProviders } from '../test/renderWithProviders'
-import { ROUTES } from '../constants'
+import { ROUTES, appPalette } from '../constants'
 import { getSession } from '../lib/session'
 import {
   AUTH_REQUEST_ERRORS,
+  AUTH_THEME_MODE,
   AUTH_VALIDATION_MESSAGES,
   HIDE_PASSWORD_LABEL,
   PASSWORD_HINT,
@@ -271,5 +272,20 @@ describe('Login', () => {
 
       expect(loginMock).not.toHaveBeenCalled()
     })
+  })
+})
+
+describe('Login theming', () => {
+  it('stays pinned to the auth mode even when the app is in light mode', () => {
+    const { container } = renderWithProviders(<Login />, { mode: 'light' })
+
+    expect(container.firstElementChild).toHaveStyle({ backgroundColor: appPalette[AUTH_THEME_MODE].pageBg })
+    expect(screen.getByRole('heading', { level: 1 })).toHaveStyle({ color: appPalette[AUTH_THEME_MODE].textPrimary })
+  })
+
+  it('renders no theme toggle — the screen has only one mode', () => {
+    renderWithProviders(<Login />)
+
+    expect(screen.queryByRole('button', { name: /switch to (light|dark) mode/i })).toBeNull()
   })
 })

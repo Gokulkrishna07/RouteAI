@@ -5,6 +5,7 @@ import { register } from '../features/auth/auth.api'
 import {
   AUTH_COPY,
   AUTH_REQUEST_ERRORS,
+  AUTH_THEME_MODE,
   EMAIL_MAX_LENGTH,
   NAME_MAX_LENGTH,
   PASSWORD_HINT,
@@ -19,6 +20,7 @@ import AuthFormError from '../features/auth/components/AuthFormError'
 import AuthLayout from '../features/auth/components/AuthLayout'
 import AuthPasswordField from '../features/auth/components/AuthPasswordField'
 import AuthSubmitButton from '../features/auth/components/AuthSubmitButton'
+import { FixedThemeMode } from '../theme'
 
 const INITIAL_VALUES: SignupFormValues = { firstName: '', lastName: '', email: '', password: '' }
 const ACTIVE_STEP = 1
@@ -41,75 +43,77 @@ function Signup() {
     })
 
   return (
-    <AuthLayout
-      title={copy.title}
-      subtitle={copy.subtitle}
-      activeStep={ACTIVE_STEP}
-      steps={SIGNUP_STEPS}
-    >
-      {/* `noValidate`: validation messages come from `validateSignupForm` so they
-          are consistent across browsers and assertable in tests. */}
-      <Box component="form" onSubmit={handleSubmit} noValidate>
-        <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
-          <AuthField
-            id="signup-first-name"
-            label="First Name"
-            placeholder="eg. John"
-            autoComplete="given-name"
-            maxLength={NAME_MAX_LENGTH}
-            value={values.firstName}
-            error={fieldErrors.firstName}
-            onChange={(value) => setValue('firstName', value)}
-          />
-          <AuthField
-            id="signup-last-name"
-            label="Last Name"
-            placeholder="eg. Francisco"
-            autoComplete="family-name"
-            maxLength={NAME_MAX_LENGTH}
-            value={values.lastName}
-            error={fieldErrors.lastName}
-            onChange={(value) => setValue('lastName', value)}
-          />
+    <FixedThemeMode mode={AUTH_THEME_MODE}>
+      <AuthLayout
+        title={copy.title}
+        subtitle={copy.subtitle}
+        activeStep={ACTIVE_STEP}
+        steps={SIGNUP_STEPS}
+      >
+        {/* `noValidate`: validation messages come from `validateSignupForm` so they
+            are consistent across browsers and assertable in tests. */}
+        <Box component="form" onSubmit={handleSubmit} noValidate>
+          <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
+            <AuthField
+              id="signup-first-name"
+              label="First Name"
+              placeholder="eg. John"
+              autoComplete="given-name"
+              maxLength={NAME_MAX_LENGTH}
+              value={values.firstName}
+              error={fieldErrors.firstName}
+              onChange={(value) => setValue('firstName', value)}
+            />
+            <AuthField
+              id="signup-last-name"
+              label="Last Name"
+              placeholder="eg. Francisco"
+              autoComplete="family-name"
+              maxLength={NAME_MAX_LENGTH}
+              value={values.lastName}
+              error={fieldErrors.lastName}
+              onChange={(value) => setValue('lastName', value)}
+            />
+          </Box>
+
+          <Box sx={{ mt: 3 }}>
+            <AuthField
+              id="signup-email"
+              label="Email"
+              type="email"
+              placeholder="eg. johnfrans@gmail.com"
+              autoComplete="email"
+              maxLength={EMAIL_MAX_LENGTH}
+              value={values.email}
+              error={fieldErrors.email}
+              onChange={(value) => setValue('email', value)}
+            />
+          </Box>
+
+          <Box sx={{ mt: 3 }}>
+            <AuthPasswordField
+              id="signup-password"
+              label="Password"
+              placeholder="Enter your password"
+              autoComplete="new-password"
+              hint={PASSWORD_HINT}
+              value={values.password}
+              error={fieldErrors.password}
+              onChange={(value) => setValue('password', value)}
+            />
+          </Box>
+
+          <AuthFormError message={formError} />
+          <AuthSubmitButton label={copy.submit} isSubmitting={isSubmitting} />
         </Box>
 
-        <Box sx={{ mt: 3 }}>
-          <AuthField
-            id="signup-email"
-            label="Email"
-            type="email"
-            placeholder="eg. johnfrans@gmail.com"
-            autoComplete="email"
-            maxLength={EMAIL_MAX_LENGTH}
-            value={values.email}
-            error={fieldErrors.email}
-            onChange={(value) => setValue('email', value)}
-          />
-        </Box>
-
-        <Box sx={{ mt: 3 }}>
-          <AuthPasswordField
-            id="signup-password"
-            label="Password"
-            placeholder="Enter your password"
-            autoComplete="new-password"
-            hint={PASSWORD_HINT}
-            value={values.password}
-            error={fieldErrors.password}
-            onChange={(value) => setValue('password', value)}
-          />
-        </Box>
-
-        <AuthFormError message={formError} />
-        <AuthSubmitButton label={copy.submit} isSubmitting={isSubmitting} />
-      </Box>
-
-      <AuthFooterPrompt
-        prompt={copy.footerPrompt}
-        actionLabel={copy.footerAction}
-        to={ROUTES.login}
-      />
-    </AuthLayout>
+        <AuthFooterPrompt
+          prompt={copy.footerPrompt}
+          actionLabel={copy.footerAction}
+          to={ROUTES.login}
+        />
+      </AuthLayout>
+    </FixedThemeMode>
   )
 }
 
