@@ -509,6 +509,25 @@
       "metaSortKey": -400
     },
     {
+      "_id": "req_usage_me_dashboard",
+      "_type": "request",
+      "parentId": "fld_usage",
+      "name": "Get My Usage Dashboard",
+      "description": "Requires the usage:read scope. 'period' is one of 7d, 30d, 90d (default 7d). 'tzOffset' is the client's minutes offset from UTC, between -840 and 840 (default 0), used to bucket days in the caller's local time. Returns totals, previous-period totals with a delta, daily breakdown with per-model splits, top models, and a 371-day activity calendar with streak stats.",
+      "method": "GET",
+      "url": "{{ _.base_url }}/usage/me/dashboard",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.token }}" }
+      ],
+      "body": {},
+      "parameters": [
+        { "name": "period", "value": "7d", "disabled": false },
+        { "name": "tzOffset", "value": "0", "disabled": false }
+      ],
+      "authentication": {},
+      "metaSortKey": -300
+    },
+    {
       "_id": "req_api_keys_create",
       "_type": "request",
       "parentId": "fld_api_keys",

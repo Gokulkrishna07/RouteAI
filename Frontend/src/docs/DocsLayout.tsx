@@ -8,6 +8,7 @@ import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined'
 import HubOutlinedIcon from '@mui/icons-material/HubOutlined'
 import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined'
 import KeyOutlinedIcon from '@mui/icons-material/KeyOutlined'
+import InsightsOutlinedIcon from '@mui/icons-material/InsightsOutlined'
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined'
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined'
@@ -32,7 +33,10 @@ const SIDEBAR_SECTIONS = [
   },
   {
     title: 'Developers',
-    items: [{ label: 'API Keys', to: ROUTES.apiKeys, icon: <KeyOutlinedIcon sx={{ fontSize: 16 }} /> }],
+    items: [
+      { label: 'API Keys', to: ROUTES.apiKeys, icon: <KeyOutlinedIcon sx={{ fontSize: 16 }} /> },
+      { label: 'Usage', to: ROUTES.usage, icon: <InsightsOutlinedIcon sx={{ fontSize: 16 }} /> },
+    ],
   },
 ]
 

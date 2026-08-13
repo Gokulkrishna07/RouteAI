@@ -6,6 +6,7 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import Models from './pages/Models'
 import Signup from './pages/Signup'
+import Usage from './pages/Usage'
 import RequireAuth from './routes/RequireAuth'
 
 /** Routes that require a session, declared once instead of repeating RequireAuth. */
@@ -15,6 +16,7 @@ const PROTECTED_ROUTES = [
   { path: ROUTES.chat, element: <Chat /> },
   { path: ROUTES.chatSession, element: <Chat /> },
   { path: ROUTES.apiKeys, element: <ApiKeys /> },
+  { path: ROUTES.usage, element: <Usage /> },
 ]
 
 function App() {
