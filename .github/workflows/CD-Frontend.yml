@@ -5,12 +5,14 @@ on:
     workflows: ["Frontend CI"]
     types:
       - completed
+  workflow_dispatch:
 
 jobs:
   deploy:
     if: >
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.head_branch == 'main'
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main')
 
     runs-on: ubuntu-latest
 
@@ -38,5 +40,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=routeai
+          workingDirectory: ./Frontend
+          wranglerVersion: "4"
+          command: pages deploy dist --project-name=routeai --branch=main --commit-dirty=true
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
