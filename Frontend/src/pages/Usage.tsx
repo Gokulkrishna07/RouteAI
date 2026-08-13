@@ -1,13 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Box, Button, CircularProgress, Typography } from '@mui/material'
 import { fontSizes, ROUTES } from '../constants'
-import {
-  DocsShell,
-  DocsThemeProvider,
-  NAV_HEIGHT,
-  SectionHeading,
-  useDocsTheme,
-} from '../docs/DocsLayout'
+import { DocsShell, NAV_HEIGHT, SectionHeading, useDocsTheme } from '../docs/DocsLayout'
 import { getSession } from '../lib/session'
 import type { MetricKey } from '../lib/usage'
 import { buildModelColors } from '../features/usage/usage.colors'
@@ -137,13 +131,11 @@ function UsageContent() {
 
 function Usage() {
   return (
-    <DocsThemeProvider>
-      <DocsShell tocLinks={TOC_LINKS} ctaLabel="Open Chat" ctaHref={ROUTES.chat}>
-        <Box sx={{ pt: `${NAV_HEIGHT / 8}px` }}>
-          <UsageContent />
-        </Box>
-      </DocsShell>
-    </DocsThemeProvider>
+    <DocsShell tocLinks={TOC_LINKS} ctaLabel="Open Chat" ctaHref={ROUTES.chat}>
+      <Box sx={{ pt: `${NAV_HEIGHT / 8}px` }}>
+        <UsageContent />
+      </Box>
+    </DocsShell>
   )
 }
 

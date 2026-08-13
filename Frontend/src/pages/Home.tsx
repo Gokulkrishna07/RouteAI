@@ -3,7 +3,7 @@ import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined'
 import ShieldOutlinedIcon from '@mui/icons-material/ShieldOutlined'
 import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined'
 import { fonts, fontSizes } from '../constants'
-import { DocsShell, DocsThemeProvider, Keyword, NAV_HEIGHT, SectionHeading, useDocsTheme } from '../docs/DocsLayout'
+import { DocsShell, Keyword, NAV_HEIGHT, SectionHeading, useDocsTheme } from '../docs/DocsLayout'
 
 const TOC_LINKS = [
   { label: 'Introduction', href: '#overview' },
@@ -60,7 +60,7 @@ const PROVIDERS = [
   { name: 'OpenRouter', description: 'A gateway to many other AI models, picked automatically for balanced tasks.' },
 ]
 
-function HomeContent() {
+function Home() {
   const { c } = useDocsTheme()
 
   return (
@@ -175,14 +175,6 @@ function HomeContent() {
         ))}
       </Box>
     </DocsShell>
-  )
-}
-
-function Home() {
-  return (
-    <DocsThemeProvider>
-      <HomeContent />
-    </DocsThemeProvider>
   )
 }
 

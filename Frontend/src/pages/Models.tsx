@@ -7,7 +7,7 @@ import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlin
 import CompareArrowsOutlinedIcon from '@mui/icons-material/CompareArrowsOutlined'
 import VerifiedUserOutlinedIcon from '@mui/icons-material/VerifiedUserOutlined'
 import { fonts, fontSizes } from '../constants'
-import { DocsShell, DocsThemeProvider, Keyword, NAV_HEIGHT, SectionHeading, useDocsTheme } from '../docs/DocsLayout'
+import { DocsShell, Keyword, NAV_HEIGHT, SectionHeading, useDocsTheme } from '../docs/DocsLayout'
 
 const TOC_LINKS = [
   { label: 'Overview', href: '#overview' },
@@ -160,7 +160,7 @@ function ModelCard({ id, name, by, icon, tagline, description, pickedFor, tryAsk
   )
 }
 
-function ModelsContent() {
+function Models() {
   const { c } = useDocsTheme()
 
   return (
@@ -254,14 +254,6 @@ function ModelsContent() {
         ))}
       </Box>
     </DocsShell>
-  )
-}
-
-function Models() {
-  return (
-    <DocsThemeProvider>
-      <ModelsContent />
-    </DocsThemeProvider>
   )
 }
 

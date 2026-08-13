@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { Box, InputBase, Typography } from '@mui/material'
-import { authColors, authFontSizes, authLayout } from '../../../constants'
+import { authFontSizes, authLayout } from '../../../constants'
+import { useAppColors } from '../../../theme'
 
 export type AuthFieldProps = {
   /** Used for the `<label for>` / input association — must be unique per page. */
@@ -42,6 +43,7 @@ function AuthField({
   endAdornment,
   autoFocus,
 }: AuthFieldProps) {
+  const c = useAppColors()
   const messageId = `${id}-message`
   const message = error ?? hint
 
@@ -53,7 +55,7 @@ function AuthField({
         sx={{
           display: 'block',
           fontSize: authFontSizes.label,
-          color: authColors.textLabel,
+          color: c.textLabel,
           mb: 1,
         }}
       >
@@ -65,12 +67,12 @@ function AuthField({
           display: 'flex',
           alignItems: 'center',
           gap: 1,
-          bgcolor: authColors.inputBg,
+          bgcolor: c.inputBg,
           borderRadius: authLayout.controlRadius,
           px: 2,
           py: 1.2,
-          outline: error ? `1px solid ${authColors.danger}` : 'none',
-          '&:focus-within': { outline: `1px solid ${authColors.focusRing}` },
+          outline: error ? `1px solid ${c.danger}` : 'none',
+          '&:focus-within': { outline: `1px solid ${c.focusRing}` },
         }}
       >
         <InputBase
@@ -87,7 +89,7 @@ function AuthField({
             'aria-invalid': error !== undefined,
             'aria-describedby': message ? messageId : undefined,
           }}
-          sx={{ color: authColors.textPrimary, fontSize: authFontSizes.formBody }}
+          sx={{ color: c.textPrimary, fontSize: authFontSizes.formBody }}
         />
         {endAdornment}
       </Box>
@@ -99,7 +101,7 @@ function AuthField({
           sx={{
             mt: 0.75,
             fontSize: error ? authFontSizes.error : authFontSizes.hint,
-            color: error ? authColors.danger : authColors.textSecondary,
+            color: error ? c.danger : c.textSecondary,
           }}
         >
           {message}

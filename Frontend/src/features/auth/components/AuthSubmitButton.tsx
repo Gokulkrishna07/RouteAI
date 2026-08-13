@@ -1,5 +1,6 @@
 import { Button, CircularProgress } from '@mui/material'
-import { authColors, authFontWeights, authLayout } from '../../../constants'
+import { authFontWeights, authLayout } from '../../../constants'
+import { useAppColors } from '../../../theme'
 
 type AuthSubmitButtonProps = {
   label: string
@@ -7,6 +8,8 @@ type AuthSubmitButtonProps = {
 }
 
 function AuthSubmitButton({ label, isSubmitting }: AuthSubmitButtonProps) {
+  const c = useAppColors()
+
   return (
     <Button
       type="submit"
@@ -20,18 +23,18 @@ function AuthSubmitButton({ label, isSubmitting }: AuthSubmitButtonProps) {
         mt: 3,
         py: 1.5,
         borderRadius: authLayout.controlRadius,
-        bgcolor: authColors.submitBg,
-        color: authColors.textInverse,
+        bgcolor: c.submitBg,
+        color: c.textInverse,
         fontWeight: authFontWeights.semiBold,
         textTransform: 'none',
-        '&:hover': { bgcolor: authColors.submitHoverBg },
-        '&.Mui-disabled': { bgcolor: authColors.submitHoverBg },
+        '&:hover': { bgcolor: c.submitHoverBg },
+        '&.Mui-disabled': { bgcolor: c.submitHoverBg },
       }}
     >
       {isSubmitting ? (
         <CircularProgress
           size={authLayout.submitIconSize}
-          sx={{ color: authColors.textInverse }}
+          sx={{ color: c.textInverse }}
         />
       ) : (
         label
