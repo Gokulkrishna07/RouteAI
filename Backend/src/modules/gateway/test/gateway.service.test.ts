@@ -62,7 +62,7 @@ describe("gatewayGenerate", () => {
 
   it("routes a low-scoring prompt to groq using the fast tier model", async () => {
     scoreComplexityMock.mockReturnValue(30);
-    groqGenerateMock.mockResolvedValue({ provider: "groq", model: "llama-3.3-70b-versatile", response: "ok" });
+    groqGenerateMock.mockResolvedValue({ provider: "groq", model: "openai/gpt-oss-120b", response: "ok" });
 
     await gatewayGenerate({ prompt: "something slightly complex" });
 

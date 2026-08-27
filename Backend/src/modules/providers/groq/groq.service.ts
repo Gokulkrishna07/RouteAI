@@ -11,7 +11,7 @@ export class GroqService {
   private readonly defaultModel: string;
 
   constructor(options: GroqServiceOptions = {}) {
-    this.defaultModel = options.defaultModel || "llama-3.1-8b-instant";
+    this.defaultModel = options.defaultModel || "openai/gpt-oss-20b";
     this.client = new GroqClient(options);
   }
 

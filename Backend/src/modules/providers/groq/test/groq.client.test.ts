@@ -51,7 +51,7 @@ describe("GroqClient", () => {
     );
     const [, init] = fetchMock.mock.calls[0];
     const parsedBody = JSON.parse((init as { body: string }).body);
-    expect(parsedBody.model).toBe("llama-3.1-8b-instant");
+    expect(parsedBody.model).toBe("openai/gpt-oss-20b");
   });
 
   it("uses baseUrl from env when options omit it", async () => {
@@ -96,7 +96,7 @@ describe("GroqClient", () => {
     const [, init] = fetchMock.mock.calls[0];
     const parsedBody = JSON.parse((init as { body: string }).body);
     expect(parsedBody).toEqual({
-      model: "llama-3.1-8b-instant",
+      model: "openai/gpt-oss-20b",
       messages: [{ role: "user", content: "hi" }],
       temperature: 0.5,
       max_tokens: 100,
