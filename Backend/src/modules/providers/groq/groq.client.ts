@@ -6,7 +6,7 @@ import type {
 } from "./groq.types";
 
 const DEFAULT_BASE_URL = "https://api.groq.com/openai/v1";
-const DEFAULT_MODEL = "llama-3.1-8b-instant";
+const DEFAULT_MODEL = "openai/gpt-oss-20b";
 
 export class GroqClient {
   private readonly apiKey?: string;

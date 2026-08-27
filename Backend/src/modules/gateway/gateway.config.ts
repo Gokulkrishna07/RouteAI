@@ -1,8 +1,8 @@
 import type { ComplexityTier, TierConfig } from "./gateway.types";
 
 export const TIER_MODEL_MAP: Record<ComplexityTier, TierConfig> = {
-  simple: { provider: "groq", model: "llama-3.1-8b-instant" },
-  fast: { provider: "groq", model: "llama-3.3-70b-versatile" },
+  simple: { provider: "groq", model: "openai/gpt-oss-20b" },
+  fast: { provider: "groq", model: "openai/gpt-oss-120b" },
   moderate: { provider: "openrouter", model: "openrouter/auto" },
   medium: { provider: "gemini", model: "gemini-flash-latest" },
   complex: { provider: "gemini", model: "gemini-flash-latest" },

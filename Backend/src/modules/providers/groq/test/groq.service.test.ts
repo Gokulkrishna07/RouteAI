@@ -43,13 +43,13 @@ describe("GroqService", () => {
     expect(GroqClient).toHaveBeenCalled();
   });
 
-  it("uses the default model 'llama-3.1-8b-instant' when none is configured or requested", async () => {
+  it("uses the default model 'openai/gpt-oss-20b' when none is configured or requested", async () => {
     generateMock.mockResolvedValue({ text: "", raw: {} });
 
     const service = new GroqService();
     const result = await service.generate({ prompt: "hi" });
 
-    expect(result.model).toBe("llama-3.1-8b-instant");
+    expect(result.model).toBe("openai/gpt-oss-20b");
   });
 
   it("prefers the request model over the configured default", async () => {
@@ -76,7 +76,7 @@ describe("GroqService", () => {
 
     expect(generateMock).toHaveBeenCalledWith({
       prompt: "hi",
-      model: "llama-3.1-8b-instant",
+      model: "openai/gpt-oss-20b",
       parameters: {
         temperature: 0.3,
         maxOutputTokens: 50,
