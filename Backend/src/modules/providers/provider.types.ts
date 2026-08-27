@@ -1,7 +1,10 @@
+import type { ChatMessage } from "../sessions/sessions.types";
+
 export type ProviderName = "gemini" | "groq" | "openrouter";
 
 export interface ProviderRequest {
   prompt: string;
+  history?: ChatMessage[];
   model?: string;
   temperature?: number;
   maxOutputTokens?: number;

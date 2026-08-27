@@ -6,11 +6,14 @@ import {
   addMessage,
   assertSessionOwnership,
   createSession,
+  getSessionMessages,
 } from "../modules/sessions/sessions.repository";
 import { deriveSessionTitle } from "../modules/sessions/sessions.util";
 import { chatSchema } from "../modules/providers/gemini/gemini.schema";
 import { getAuthContext } from "../plugins/auth";
 import { AppError } from "../errors/errorHandler";
+
+const MAX_HISTORY_MESSAGES = 20;
 
 const chatRequestSchema = chatSchema.extend({
   sessionId: z.string().uuid().optional(),
@@ -47,10 +50,12 @@ export default async function chatRoute(fastifyInstance: FastifyInstance) {
       const persist = store ?? auth.source === "jwt";
 
       let sessionId: string | null = null;
+      let history: { role: "user" | "assistant"; content: string }[] = [];
       if (persist) {
         if (incomingSessionId) {
           await assertSessionOwnership(incomingSessionId, auth.userId);
           sessionId = incomingSessionId;
+          history = await getSessionMessages(sessionId, auth.userId);
         } else {
           sessionId = await createSession(
             auth.userId,
@@ -61,7 +66,13 @@ export default async function chatRoute(fastifyInstance: FastifyInstance) {
         await addMessage(sessionId, "user", providerRequest.prompt);
       }
 
-      const result = await gatewayGenerate(providerRequest);
+      const result = await gatewayGenerate({
+        ...providerRequest,
+        history: history.slice(-MAX_HISTORY_MESSAGES).map(({ role, content }) => ({
+          role,
+          content,
+        })),
+      });
 
       if (sessionId) {
         await addMessage(

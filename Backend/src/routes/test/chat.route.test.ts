@@ -7,6 +7,7 @@ const gatewayGenerateMock = vi.fn();
 const createSessionMock = vi.fn();
 const assertSessionOwnershipMock = vi.fn();
 const addMessageMock = vi.fn();
+const getSessionMessagesMock = vi.fn();
 const recordChatUsageMock = vi.fn();
 
 vi.mock("../../modules/gateway/gateway.service", () => ({
@@ -17,6 +18,7 @@ vi.mock("../../modules/sessions/sessions.repository", () => ({
   createSession: (...args: unknown[]) => createSessionMock(...args),
   assertSessionOwnership: (...args: unknown[]) => assertSessionOwnershipMock(...args),
   addMessage: (...args: unknown[]) => addMessageMock(...args),
+  getSessionMessages: (...args: unknown[]) => getSessionMessagesMock(...args),
 }));
 
 vi.mock("../../modules/usage/usage.repository", () => ({
@@ -57,6 +59,8 @@ describe("chatRoute", () => {
     createSessionMock.mockResolvedValue("session-1");
     assertSessionOwnershipMock.mockResolvedValue(undefined);
     addMessageMock.mockResolvedValue(undefined);
+    getSessionMessagesMock.mockReset();
+    getSessionMessagesMock.mockResolvedValue([]);
     recordChatUsageMock.mockResolvedValue(undefined);
   });
 
@@ -79,7 +83,7 @@ describe("chatRoute", () => {
       message: "Chat generated successfully",
       data: { ...result, sessionId: "session-1" },
     });
-    expect(gatewayGenerateMock).toHaveBeenCalledWith({ prompt: "hello" });
+    expect(gatewayGenerateMock).toHaveBeenCalledWith({ prompt: "hello", history: [] });
     expect(createSessionMock).toHaveBeenCalledWith("user-1", "hello");
     expect(addMessageMock).toHaveBeenNthCalledWith(1, "session-1", "user", "hello");
     expect(addMessageMock).toHaveBeenNthCalledWith(2, "session-1", "assistant", "hi", "gemini", "m");
@@ -88,6 +92,10 @@ describe("chatRoute", () => {
   it("POST /chat reuses an existing session when sessionId is provided", async () => {
     const result = { provider: "gemini", model: "m", response: "hi", raw: {}, latencyMs: 1 };
     gatewayGenerateMock.mockResolvedValue(result);
+    getSessionMessagesMock.mockResolvedValue([
+      { id: "m1", role: "user", content: "earlier question", provider: null, model: null, created_at: "" },
+      { id: "m2", role: "assistant", content: "earlier answer", provider: "gemini", model: "m", created_at: "" },
+    ]);
     const app = await buildApp();
     const token = app.jwt.sign({ sub: "user-1" });
 
@@ -103,8 +111,19 @@ describe("chatRoute", () => {
       "11111111-1111-4111-8111-111111111111",
       "user-1",
     );
+    expect(getSessionMessagesMock).toHaveBeenCalledWith(
+      "11111111-1111-4111-8111-111111111111",
+      "user-1",
+    );
     expect(createSessionMock).not.toHaveBeenCalled();
     expect(response.json().data.sessionId).toBe("11111111-1111-4111-8111-111111111111");
+    expect(gatewayGenerateMock).toHaveBeenCalledWith({
+      prompt: "hello",
+      history: [
+        { role: "user", content: "earlier question" },
+        { role: "assistant", content: "earlier answer" },
+      ],
+    });
   });
 
   it("POST /chat returns 401 without a token", async () => {

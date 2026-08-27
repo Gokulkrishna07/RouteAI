@@ -1,3 +1,4 @@
+import type { ChatMessage } from "../../sessions/sessions.types";
 import type { ProviderRequest, ProviderResponse } from "../provider.types";
 
 export type GroqModel = string;
@@ -11,6 +12,7 @@ export interface GroqClientOptions {
 
 export interface GroqGenerateRequest {
   prompt: string;
+  history?: ChatMessage[];
   model?: GroqModel;
   parameters?: {
     temperature?: number;

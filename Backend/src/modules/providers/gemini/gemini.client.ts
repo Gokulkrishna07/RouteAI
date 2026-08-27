@@ -53,6 +53,10 @@ export class GeminiClient {
           },
           body: JSON.stringify({
             contents: [
+              ...(request.history ?? []).map(({ role, content }) => ({
+                role: role === "assistant" ? "model" : "user",
+                parts: [{ text: content }],
+              })),
               {
                 role: "user",
                 parts: [{ text: request.prompt }],

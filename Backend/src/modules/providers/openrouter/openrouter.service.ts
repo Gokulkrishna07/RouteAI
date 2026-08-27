@@ -23,6 +23,7 @@ export class OpenRouterService {
 
     const result = await this.client.generate({
       prompt: request.prompt,
+      history: request.history,
       model,
       parameters: {
         temperature: request.temperature,
