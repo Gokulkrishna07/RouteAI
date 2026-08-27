@@ -1,3 +1,4 @@
+import type { ChatMessage } from "../../sessions/sessions.types";
 import type { ProviderRequest, ProviderResponse } from "../provider.types";
 
 export type GeminiModel = string;
@@ -21,6 +22,7 @@ export interface GeminiGenerateParams {
 
 export interface GeminiGenerateRequest {
   prompt: string;
+  history?: ChatMessage[];
   model?: GeminiModel;
   parameters?: GeminiGenerateParams;
 }

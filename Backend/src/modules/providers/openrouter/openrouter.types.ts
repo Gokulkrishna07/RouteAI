@@ -1,3 +1,4 @@
+import type { ChatMessage } from "../../sessions/sessions.types";
 import type { ProviderRequest, ProviderResponse } from "../provider.types";
 
 export type OpenRouterModel = string;
@@ -11,6 +12,7 @@ export interface OpenRouterClientOptions {
 
 export interface OpenRouterGenerateRequest {
   prompt: string;
+  history?: ChatMessage[];
   model?: OpenRouterModel;
   parameters?: {
     temperature?: number;

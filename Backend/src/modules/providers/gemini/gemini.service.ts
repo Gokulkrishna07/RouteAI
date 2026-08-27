@@ -24,6 +24,7 @@ export class GeminiService {
 
     const clientRequest: GeminiGenerateRequest = {
       prompt: request.prompt,
+      history: request.history,
       model,
       parameters: {
         temperature: request.temperature,

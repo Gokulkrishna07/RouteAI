@@ -39,7 +39,10 @@ export class OpenRouterClient {
       },
       body: JSON.stringify({
         model,
-        messages: [{ role: "user", content: request.prompt }],
+        messages: [
+          ...(request.history ?? []).map(({ role, content }) => ({ role, content })),
+          { role: "user", content: request.prompt },
+        ],
         temperature: request.parameters?.temperature,
         max_tokens: request.parameters?.maxOutputTokens ?? DEFAULT_MAX_TOKENS,
         top_p: request.parameters?.topP,

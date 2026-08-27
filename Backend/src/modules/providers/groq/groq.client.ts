@@ -36,7 +36,10 @@ export class GroqClient {
       },
       body: JSON.stringify({
         model,
-        messages: [{ role: "user", content: request.prompt }],
+        messages: [
+          ...(request.history ?? []).map(({ role, content }) => ({ role, content })),
+          { role: "user", content: request.prompt },
+        ],
         temperature: request.parameters?.temperature,
         max_tokens: request.parameters?.maxOutputTokens,
         top_p: request.parameters?.topP,
