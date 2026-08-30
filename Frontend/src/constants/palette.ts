@@ -20,10 +20,11 @@ const base = {
     overlay: '#000000',
   },
   dark: {
-    page: '#0A120E',
-    ink: '#000000',
+    page: '#070B08',
+    /** Near-black green the brand fills are lettered in. */
+    ink: '#04170C',
     paper: '#FFFFFF',
-    brand: '#259C63',
+    brand: '#2FBF75',
     success: '#34D399',
     danger: '#FF4D4F',
     warning: '#F59E0B',
@@ -52,7 +53,6 @@ const light = {
   // Surfaces
   pageBg: base.light.page,
   formBg: base.light.paper,
-  asideBg: '#E7F1EB',
   surfaceHover: '#EDF2EF',
   inputBg: '#F1F5F2',
   /** Translucent page background for sticky/blurred surfaces such as the top nav. */
@@ -67,8 +67,7 @@ const light = {
   textSecondary: '#5A6B62',
   textMuted: '#7A867F',
   textLabel: '#3F4C45',
-  textAside: '#2F4A3C',
-  /** Text drawn on top of a `brand`/`stepActiveBg`/`submitBg` fill. */
+  /** Text drawn on top of a `brand`/`submitBg` fill. */
   textInverse: base.light.paper,
   iconMuted: '#7A867F',
 
@@ -78,10 +77,6 @@ const light = {
   brandSoft: '#2E9E68',
   accentBg: withAlpha(base.light.brand, alpha.light.accent),
   focusRing: withAlpha(base.light.brand, alpha.focus),
-
-  /** Decorative only — the blurred glows behind the auth aside. */
-  orbPrimary: '#6FD3A2',
-  orbSecondary: '#A7E3C5',
 
   // Status
   danger: base.light.danger,
@@ -100,11 +95,6 @@ const light = {
   codeText: '#E6EDE9',
   codeMuted: '#93A79C',
 
-  // Auth onboarding steps
-  stepActiveBg: base.light.brand,
-  stepIdleBg: withAlpha(base.light.overlay, alpha.light.tint),
-  stepIdleBadgeBg: withAlpha(base.light.overlay, alpha.light.badge),
-
   submitBg: base.light.brand,
   submitHoverBg: '#0B4F2C',
 } as const
@@ -114,32 +104,27 @@ export type AppColors = { readonly [K in keyof typeof light]: string }
 
 const dark: AppColors = {
   pageBg: base.dark.page,
-  formBg: '#050A07',
-  asideBg: '#03100A',
-  surfaceHover: '#101C16',
-  inputBg: '#0E1A14',
+  formBg: '#090E0A',
+  surfaceHover: '#131B15',
+  inputBg: '#0E140F',
   scrimBg: withAlpha(base.dark.page, alpha.scrim),
 
   cardBorder: withAlpha(base.dark.overlay, alpha.dark.hairline),
   cardGlow: '0 25px 50px rgba(0, 0, 0, 0.5), 0 0 60px rgba(35, 140, 88, 0.25)',
-  divider: '#333333',
+  divider: '#18231B',
 
-  textPrimary: base.dark.paper,
-  textSecondary: '#8F9B94',
-  textMuted: '#7F8C85',
-  textLabel: '#CCCCCC',
-  textAside: '#A0C4B2',
+  textPrimary: '#E8EFE9',
+  textSecondary: '#8D9B91',
+  textMuted: '#6B776E',
+  textLabel: '#C3CFC6',
   textInverse: base.dark.ink,
-  iconMuted: '#666666',
+  iconMuted: '#7E8C83',
 
   brand: base.dark.brand,
-  brandStrong: '#10663A',
-  brandSoft: '#4FC08A',
+  brandStrong: '#199B5B',
+  brandSoft: '#7CEFB4',
   accentBg: withAlpha(base.dark.brand, alpha.dark.accent),
   focusRing: withAlpha(base.dark.brand, alpha.focus),
-
-  orbPrimary: base.dark.brand,
-  orbSecondary: '#10663A',
 
   danger: base.dark.danger,
   dangerBg: withAlpha(base.dark.danger, alpha.softTint),
@@ -150,17 +135,13 @@ const dark: AppColors = {
   warning: base.dark.warning,
   warningBg: withAlpha(base.dark.warning, alpha.softTint),
 
-  codeBg: base.dark.ink,
-  codeBorder: '#333333',
+  codeBg: '#0B120D',
+  codeBorder: '#1E2B21',
   codeText: base.dark.paper,
   codeMuted: '#8F9B94',
 
-  stepActiveBg: base.dark.paper,
-  stepIdleBg: withAlpha(base.dark.overlay, alpha.dark.tint),
-  stepIdleBadgeBg: withAlpha(base.dark.overlay, alpha.dark.badge),
-
-  submitBg: base.dark.paper,
-  submitHoverBg: '#E0E0E0',
+  submitBg: '#33C97C',
+  submitHoverBg: '#4ADE93',
 }
 
 export const appPalette: Readonly<Record<ThemeMode, AppColors>> = { light, dark }

@@ -1,4 +1,4 @@
-# RouteAi
+# Route AI
 
 One chat API, several LLM providers. You send a prompt, the gateway scores how hard it looks and sends it to a model that fits — a tiny Llama for "what's 2+2", Gemini for "design a schema and explain the tradeoffs". You can always override the model if you'd rather pick yourself.
 

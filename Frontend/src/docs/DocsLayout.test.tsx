@@ -67,7 +67,7 @@ describe('ThemeToggle', () => {
 
   it('repaints the shell and persists the choice', async () => {
     const { user } = renderShell('dark')
-    const wordmark = screen.getByText('AI Model Router')
+    const wordmark = screen.getByText('Route AI')
     expect(wordmark).toHaveStyle({ color: docsPalette.dark.textPrimary })
 
     await user.click(screen.getByRole('button', { name: NAV_LABELS.switchToLight }))
@@ -81,7 +81,7 @@ describe('ThemeToggle', () => {
 describe('Logo', () => {
   it('links back to the home route', () => {
     renderWithProviders(<Logo />)
-    const link = screen.getByRole('link', { name: /AI Model Router/ })
+    const link = screen.getByRole('link', { name: /Route AI/ })
     expect(link).toHaveAttribute('href', ROUTES.home)
   })
 })

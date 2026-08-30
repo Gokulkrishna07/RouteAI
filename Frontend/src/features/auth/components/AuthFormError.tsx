@@ -1,5 +1,5 @@
-import { Typography } from '@mui/material'
-import { authFontSizes } from '../../../constants'
+import { Box, Typography } from '@mui/material'
+import { authAlpha, authFontSizes, authFontWeights, authLayout, withAlpha } from '../../../constants'
 import { useAppColors } from '../../../theme'
 
 type AuthFormErrorProps = {
@@ -13,12 +13,43 @@ function AuthFormError({ message }: AuthFormErrorProps) {
   if (!message) return null
 
   return (
-    <Typography
+    <Box
       role="alert"
-      sx={{ mt: 2, fontSize: authFontSizes.error, color: c.danger }}
+      sx={{
+        display: 'flex',
+        gap: 1.25,
+        mt: 2.5,
+        px: 1.75,
+        py: 1.5,
+        borderRadius: authLayout.controlRadius,
+        bgcolor: withAlpha(c.danger, authAlpha.errorSurface),
+        border: `1px solid ${withAlpha(c.danger, authAlpha.errorBorder)}`,
+        color: c.danger,
+      }}
     >
-      {message}
-    </Typography>
+      <Box
+        aria-hidden
+        sx={{
+          flexShrink: 0,
+          width: 16,
+          height: 16,
+          mt: '2px',
+          borderRadius: '50%',
+          bgcolor: c.danger,
+          color: c.dangerText,
+          fontSize: authFontSizes.divider,
+          fontWeight: authFontWeights.heavy,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        !
+      </Box>
+      <Typography sx={{ fontSize: authFontSizes.error, lineHeight: 1.45, color: 'inherit' }}>
+        {message}
+      </Typography>
+    </Box>
   )
 }
 

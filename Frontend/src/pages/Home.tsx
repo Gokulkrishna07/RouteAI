@@ -7,7 +7,7 @@ import { DocsShell, Keyword, NAV_HEIGHT, SectionHeading, useDocsTheme } from '..
 
 const TOC_LINKS = [
   { label: 'Introduction', href: '#overview' },
-  { label: 'Why AI Model Router', href: '#why-ai-model-router' },
+  { label: 'Why Route AI', href: '#why-route-ai' },
   { label: 'Supported Providers', href: '#supported-providers' },
 ]
 
@@ -33,7 +33,7 @@ const PRINCIPLES = [
   {
     title: 'Smart, automatic routing',
     description:
-      "You never pick a model yourself. AI Model Router reads how complex your question is and quietly sends it to the AI best suited to answer it — from a quick one-liner to a deep, detailed ask.",
+      "You never pick a model yourself. Route AI reads how complex your question is and quietly sends it to the AI best suited to answer it — from a quick one-liner to a deep, detailed ask.",
   },
   {
     title: 'One doorway, many minds',
@@ -64,7 +64,7 @@ function Home() {
   const { c } = useDocsTheme()
 
   return (
-    <DocsShell tocLinks={TOC_LINKS} ctaLabel="See how it works" ctaHref="#why-ai-model-router">
+    <DocsShell tocLinks={TOC_LINKS} ctaLabel="See how it works" ctaHref="#why-route-ai">
       <Typography sx={{ color: c.accent, fontWeight: 600, fontSize: fontSizes.small, mb: 1 }}>Overview</Typography>
       <Typography
         id="overview"
@@ -78,11 +78,11 @@ function Home() {
           mb: 2,
         }}
       >
-        AI Model Router
+        Route AI
       </Typography>
       <Typography sx={{ fontSize: fontSizes.body, lineHeight: 1.7, color: c.textSecondary, mb: 2 }}>
         Talking to different AI assistants usually means juggling separate apps, logins, and settings.{' '}
-        <Keyword>AI Model Router</Keyword> puts them all behind <Keyword>one simple, secure doorway</Keyword>
+        <Keyword>Route AI</Keyword> puts them all behind <Keyword>one simple, secure doorway</Keyword>
         &nbsp;&mdash; so you sign in once and chat with any supported AI without ever thinking about which one
         is answering.
       </Typography>
@@ -120,8 +120,8 @@ function Home() {
         ))}
       </Box>
 
-      <SectionHeading id="why-ai-model-router" mt={10}>
-        Why AI Model Router
+      <SectionHeading id="why-route-ai" mt={10}>
+        Why Route AI
       </SectionHeading>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
         {PRINCIPLES.map((principle) => (
@@ -133,7 +133,7 @@ function Home() {
 
       <SectionHeading id="supported-providers">Supported Providers</SectionHeading>
       <Typography sx={{ fontSize: fontSizes.body, lineHeight: 1.7, color: c.textSecondary, mb: 3 }}>
-        These are the AI models AI Model Router can currently reach for you. You never have to choose between
+        These are the AI models Route AI can currently reach for you. You never have to choose between
         them yourself &mdash; the app does that for you, automatically.
       </Typography>
       <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>

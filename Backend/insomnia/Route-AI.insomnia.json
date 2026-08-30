@@ -5,17 +5,17 @@
   "__export_source": "insomnia.desktop.app:v8",
   "resources": [
     {
-      "_id": "wrk_ai_model_router",
+      "_id": "wrk_route_ai",
       "_type": "workspace",
       "parentId": null,
-      "name": "AI Model Router API",
+      "name": "Route AI API",
       "description": "Collection covering all backend endpoints: health, auth (register/login/refresh/me/logout), chat gateway, sessions, usage, and API keys.",
       "scope": "collection"
     },
     {
       "_id": "env_base",
       "_type": "environment",
-      "parentId": "wrk_ai_model_router",
+      "parentId": "wrk_route_ai",
       "name": "Base Environment",
       "data": {
         "base_url": "http://127.0.0.1:3000/api/v1",
@@ -65,7 +65,7 @@
     {
       "_id": "fld_health",
       "_type": "request_group",
-      "parentId": "wrk_ai_model_router",
+      "parentId": "wrk_route_ai",
       "name": "Health",
       "description": "",
       "environment": {},
@@ -74,7 +74,7 @@
     {
       "_id": "fld_auth",
       "_type": "request_group",
-      "parentId": "wrk_ai_model_router",
+      "parentId": "wrk_route_ai",
       "name": "Auth",
       "description": "",
       "environment": {},
@@ -83,7 +83,7 @@
     {
       "_id": "fld_chat",
       "_type": "request_group",
-      "parentId": "wrk_ai_model_router",
+      "parentId": "wrk_route_ai",
       "name": "Chat",
       "description": "",
       "environment": {},
@@ -92,7 +92,7 @@
     {
       "_id": "fld_sessions",
       "_type": "request_group",
-      "parentId": "wrk_ai_model_router",
+      "parentId": "wrk_route_ai",
       "name": "Sessions",
       "description": "",
       "environment": {},
@@ -101,7 +101,7 @@
     {
       "_id": "fld_usage",
       "_type": "request_group",
-      "parentId": "wrk_ai_model_router",
+      "parentId": "wrk_route_ai",
       "name": "Usage",
       "description": "",
       "environment": {},
@@ -110,7 +110,7 @@
     {
       "_id": "fld_api_keys",
       "_type": "request_group",
-      "parentId": "wrk_ai_model_router",
+      "parentId": "wrk_route_ai",
       "name": "API Keys",
       "description": "JWT-only. An API key cannot manage API keys.",
       "environment": {},

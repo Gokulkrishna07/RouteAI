@@ -63,12 +63,21 @@ export const AUTH_COPY = {
   },
 } as const
 
-export const AUTH_ASIDE_COPY = {
-  title: ['Get Started', 'with Us'],
-  subtitle: 'Complete these easy steps to access your intelligent workspace.',
+export const BRAND_NAME = 'Route AI'
+
+export const AUTH_HERO_COPY = {
+  eyebrow: 'One key, every model',
+  title: ['One endpoint.', 'Every frontier model.'],
+  subtitle:
+    'Route every prompt to the model that answers it best — without rewriting a line of your integration.',
 } as const
 
-const SHARED_ONBOARDING_STEPS = ['Select your AI models', 'Start building'] as const
+/** Capabilities the product actually ships, numbered in the hero. */
+export const AUTH_HERO_PROOF = [
+  'Automatic model selection per request',
+  'Drop-in compatible with your existing SDK',
+  'Spend and latency tracked on every call',
+] as const
 
-export const LOGIN_STEPS = ['Sign in to your account', ...SHARED_ONBOARDING_STEPS] as const
-export const SIGNUP_STEPS = ['Sign up your account', ...SHARED_ONBOARDING_STEPS] as const
+/** Client-side warning; the browser is the only thing that knows this. */
+export const CAPS_LOCK_NOTICE = 'Caps Lock is on.'
