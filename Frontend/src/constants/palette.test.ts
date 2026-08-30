@@ -48,18 +48,13 @@ describe.each(MODES)('appPalette.%s', (mode) => {
     expect(contrast(c.textPrimary, c.inputBg)).toBeGreaterThanOrEqual(WCAG_AA_TEXT)
   })
 
-  it('keeps the aside copy readable on the aside background', () => {
-    expect(contrast(c.textAside, c.asideBg)).toBeGreaterThanOrEqual(WCAG_AA_TEXT)
-  })
-
   it('keeps the brand accent readable as link text', () => {
     expect(contrast(c.brand, c.pageBg)).toBeGreaterThanOrEqual(WCAG_AA_LARGE_TEXT)
   })
 
   it('keeps inverse text readable on the fills it is drawn on', () => {
-    for (const fill of [c.submitBg, c.stepActiveBg, c.brand] as const) {
-      expect(contrast(c.textInverse, fill), `textInverse on ${fill}`).toBeGreaterThanOrEqual(WCAG_AA_LARGE_TEXT)
-    }
+    expect(contrast(c.textInverse, c.submitBg)).toBeGreaterThanOrEqual(WCAG_AA_TEXT)
+    expect(contrast(c.textInverse, c.brand)).toBeGreaterThanOrEqual(WCAG_AA_LARGE_TEXT)
   })
 
   it('keeps code blocks readable', () => {

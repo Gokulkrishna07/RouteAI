@@ -5,9 +5,10 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import SendRoundedIcon from '@mui/icons-material/SendRounded'
 import MenuIcon from '@mui/icons-material/Menu'
+import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded'
 import AddCommentOutlinedIcon from '@mui/icons-material/AddCommentOutlined'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
-import { fonts, fontSizes } from '../constants'
+import { ROUTES, fonts, fontSizes } from '../constants'
 import type { DocsColors } from '../constants'
 import { Logo, LogoutButton, ThemeToggle, useDocsTheme } from '../docs/DocsLayout'
 import { apiClient, getErrorMessage } from '../lib/apiClient'
@@ -155,6 +156,8 @@ function SessionRow({
   }
 
   const commitRename = async () => {
+    if (!editing) return
+
     const title = draftTitle.trim()
     setEditing(false)
     if (!title || title === session.title) return
@@ -179,9 +182,19 @@ function SessionRow({
     }
   }
 
-  if (editing) {
-    return (
-      <Box sx={{ px: 1.5, py: 0.5 }}>
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 0.5,
+        borderRadius: 1.5,
+        px: 0.5,
+        bgcolor: isActive && !editing ? c.accentBg : 'transparent',
+        '&:hover': { bgcolor: isActive && !editing ? c.accentBg : c.surfaceHover },
+      }}
+    >
+      {editing ? (
         <TextField
           autoFocus
           size="small"
@@ -197,54 +210,43 @@ function SessionRow({
             if (event.key === 'Escape') setEditing(false)
           }}
           sx={{
+            my: 0.25,
             '& .MuiOutlinedInput-root': { bgcolor: c.bg },
-            '& .MuiOutlinedInput-input': { color: c.textPrimary },
+            '& .MuiOutlinedInput-input': { color: c.textPrimary, fontSize: fontSizes.small, py: 0.75 },
             '& .MuiOutlinedInput-notchedOutline': { borderColor: c.border },
           }}
         />
-      </Box>
-    )
-  }
-
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 0.5,
-        borderRadius: 1.5,
-        px: 0.5,
-        bgcolor: isActive ? c.accentBg : 'transparent',
-        '&:hover': { bgcolor: isActive ? c.accentBg : c.surfaceHover },
-      }}
-    >
-      <Box
-        component="button"
-        onClick={onNavigate}
-        sx={{
-          flex: 1,
-          minWidth: 0,
-          textAlign: 'left',
-          cursor: 'pointer',
-          fontFamily: 'inherit',
-          fontSize: fontSizes.small,
-          color: isActive ? c.accent : c.textSecondary,
-          bgcolor: 'transparent',
-          border: 'none',
-          borderRadius: 1.5,
-          px: 1,
-          py: 0.875,
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-        }}
-      >
-        {session.title}
-      </Box>
-      <IconButton size="small" onClick={(event) => setMenuAnchor(event.currentTarget)} sx={{ color: c.textMuted }}>
-        <MoreHorizIcon sx={{ fontSize: 17 }} />
-      </IconButton>
-      <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={closeMenu}>
+      ) : (
+        <>
+          <Box
+            component="button"
+            onClick={onNavigate}
+            sx={{
+              flex: 1,
+              minWidth: 0,
+              textAlign: 'left',
+              cursor: 'pointer',
+              fontFamily: 'inherit',
+              fontSize: fontSizes.small,
+              color: isActive ? c.accent : c.textSecondary,
+              bgcolor: 'transparent',
+              border: 'none',
+              borderRadius: 1.5,
+              px: 1,
+              py: 0.875,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {session.title}
+          </Box>
+          <IconButton size="small" onClick={(event) => setMenuAnchor(event.currentTarget)} sx={{ color: c.textMuted }}>
+            <MoreHorizIcon sx={{ fontSize: 17 }} />
+          </IconButton>
+        </>
+      )}
+      <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={closeMenu} disableRestoreFocus>
         <MenuItem onClick={startRename}>Rename</MenuItem>
         <MenuItem onClick={() => void handleDelete()} sx={{ color: c.danger }}>
           Delete
@@ -499,6 +501,14 @@ function Chat() {
           >
             <MenuIcon fontSize="small" />
           </IconButton>
+          <IconButton
+            onClick={() => navigate(ROUTES.home)}
+            aria-label="Back to home"
+            size="small"
+            sx={{ color: c.textSecondary }}
+          >
+            <ArrowBackRoundedIcon fontSize="small" />
+          </IconButton>
           <Logo />
           <Box sx={{ flex: 1 }} />
           {session && (
@@ -624,7 +634,7 @@ function Chat() {
               fullWidth
               multiline
               maxRows={6}
-              placeholder="Message AI Model Router..."
+              placeholder="Message Route AI..."
               value={input}
               onChange={(event) => setInput(event.target.value)}
               onKeyDown={(event) => {

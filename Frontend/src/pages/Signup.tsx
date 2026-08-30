@@ -9,7 +9,6 @@ import {
   EMAIL_MAX_LENGTH,
   NAME_MAX_LENGTH,
   PASSWORD_HINT,
-  SIGNUP_STEPS,
 } from '../features/auth/auth.constants'
 import type { SignupFormValues } from '../features/auth/auth.types'
 import { toFullName, validateSignupForm } from '../features/auth/auth.validation'
@@ -23,7 +22,6 @@ import AuthSubmitButton from '../features/auth/components/AuthSubmitButton'
 import { FixedThemeMode } from '../theme'
 
 const INITIAL_VALUES: SignupFormValues = { firstName: '', lastName: '', email: '', password: '' }
-const ACTIVE_STEP = 1
 
 const copy = AUTH_COPY.signup
 
@@ -44,12 +42,7 @@ function Signup() {
 
   return (
     <FixedThemeMode mode={AUTH_THEME_MODE}>
-      <AuthLayout
-        title={copy.title}
-        subtitle={copy.subtitle}
-        activeStep={ACTIVE_STEP}
-        steps={SIGNUP_STEPS}
-      >
+      <AuthLayout title={copy.title} subtitle={copy.subtitle}>
         {/* `noValidate`: validation messages come from `validateSignupForm` so they
             are consistent across browsers and assertable in tests. */}
         <Box component="form" onSubmit={handleSubmit} noValidate>

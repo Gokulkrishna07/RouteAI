@@ -11,7 +11,6 @@ import AuthSubmitButton from './AuthSubmitButton'
 import { SHOW_PASSWORD_LABEL } from '../auth.constants'
 
 const MODES: ThemeMode[] = ['light', 'dark']
-const STEPS = ['Account', 'Profile'] as const
 
 const noop = () => {}
 
@@ -20,7 +19,7 @@ describe.each(MODES)('auth surfaces in %s mode', (mode) => {
 
   it('paints the page and form column from the active palette', () => {
     const { container } = renderWithProviders(
-      <AuthLayout title="Log In Account" subtitle="Welcome back" activeStep={1} steps={STEPS}>
+      <AuthLayout title="Log In Account" subtitle="Welcome back">
         <p>form</p>
       </AuthLayout>,
       { mode },

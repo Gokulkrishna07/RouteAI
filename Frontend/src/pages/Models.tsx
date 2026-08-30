@@ -22,7 +22,7 @@ const HOW_IT_DECIDES = [
   {
     icon: <CompareArrowsOutlinedIcon sx={{ fontSize: 18 }} />,
     title: 'It reads your question first',
-    description: 'Before anything is answered, AI Model Router takes a quick look at what you asked — how long it is, how many parts it has, how much thinking it seems to need.',
+    description: 'Before anything is answered, Route AI takes a quick look at what you asked — how long it is, how many parts it has, how much thinking it seems to need.',
   },
   {
     icon: <SpeedOutlinedIcon sx={{ fontSize: 18 }} />,
@@ -37,7 +37,7 @@ const HOW_IT_DECIDES = [
   {
     icon: <TipsAndUpdatesOutlinedIcon sx={{ fontSize: 18 }} />,
     title: 'You can always ask for a specific model',
-    description: "If you already know which model you'd like, you can name it directly and AI Model Router will use that one instead of deciding for you.",
+    description: "If you already know which model you'd like, you can name it directly and Route AI will use that one instead of deciding for you.",
   },
 ]
 
@@ -49,7 +49,7 @@ const MODELS = [
     icon: <PsychologyOutlinedIcon sx={{ fontSize: 20 }} />,
     tagline: 'The thoughtful one.',
     description:
-      "Google's Gemini is the model AI Model Router turns to when a question needs more care and reasoning — something with several steps, a longer explanation, or a bit of nuance.",
+      "Google's Gemini is the model Route AI turns to when a question needs more care and reasoning — something with several steps, a longer explanation, or a bit of nuance.",
     pickedFor: 'Detailed, involved, or multi-part questions.',
     tryAsking: ['Explain a tricky concept step by step', 'Compare a few options and weigh the trade-offs', 'Draft something that needs a thoughtful tone'],
   },
@@ -60,7 +60,7 @@ const MODELS = [
     icon: <BoltOutlinedIcon sx={{ fontSize: 20 }} />,
     tagline: 'The quick one.',
     description:
-      "Groq is built for raw speed. It's the first model AI Model Router reaches for on short, everyday questions where you just want a fast, no-fuss answer.",
+      "Groq is built for raw speed. It's the first model Route AI reaches for on short, everyday questions where you just want a fast, no-fuss answer.",
     pickedFor: 'Simple, quick, everyday questions.',
     tryAsking: ['Quick facts or definitions', 'Simple one-line questions', 'Small everyday tasks like a unit conversion'],
   },
@@ -71,7 +71,7 @@ const MODELS = [
     icon: <RouteOutlinedIcon sx={{ fontSize: 20 }} />,
     tagline: 'The flexible one.',
     description:
-      "OpenRouter isn't a single model — it's a gateway to many others. For questions that sit right in the middle of the difficulty scale, AI Model Router lets OpenRouter automatically pick whichever model behind it is best suited to answer.",
+      "OpenRouter isn't a single model — it's a gateway to many others. For questions that sit right in the middle of the difficulty scale, Route AI lets OpenRouter automatically pick whichever model behind it is best suited to answer.",
     pickedFor: 'Balanced, middle-of-the-road questions.',
     tryAsking: ['Everyday questions that need a bit more depth', 'Requests that don’t clearly need a fast or heavyweight model', 'General writing or explanation help'],
   },
@@ -86,7 +86,7 @@ const GOOD_TO_KNOW = [
   {
     icon: <TipsAndUpdatesOutlinedIcon sx={{ fontSize: 18 }} />,
     title: 'The list will keep growing',
-    description: 'AI Model Router is designed to plug in new models over time, so this page will grow along with it.',
+    description: 'Route AI is designed to plug in new models over time, so this page will grow along with it.',
   },
 ]
 
@@ -164,7 +164,7 @@ function Models() {
   const { c } = useDocsTheme()
 
   return (
-    <DocsShell tocLinks={TOC_LINKS} ctaLabel="See how it works" ctaHref="/home#why-ai-model-router">
+    <DocsShell tocLinks={TOC_LINKS} ctaLabel="See how it works" ctaHref="/home#why-route-ai">
       <Typography sx={{ color: c.accent, fontWeight: 600, fontSize: fontSizes.small, mb: 1 }}>Models</Typography>
       <Typography
         id="overview"
@@ -181,7 +181,7 @@ function Models() {
         The models behind the router
       </Typography>
       <Typography sx={{ fontSize: fontSizes.body, lineHeight: 1.7, color: c.textSecondary, mb: 6 }}>
-        You never have to choose one of these yourself &mdash; <Keyword>AI Model Router</Keyword> reads your
+        You never have to choose one of these yourself &mdash; <Keyword>Route AI</Keyword> reads your
         question and quietly picks whichever model below is the best fit, every time you hit send. Here&apos;s
         what each one brings to the table.
       </Typography>

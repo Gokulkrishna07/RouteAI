@@ -19,14 +19,19 @@ function AuthFooterPrompt({ prompt, actionLabel, to }: AuthFooterPromptProps) {
 
   return (
     <Typography
-      sx={{ mt: 3, textAlign: 'center', fontSize: authFontSizes.label, color: c.textSecondary }}
+      sx={{ mt: 3, textAlign: 'center', fontSize: authFontSizes.footer, color: c.textSecondary }}
     >
       {prompt}{' '}
       <Link
         component={RouterLink}
         to={to}
-        underline="hover"
-        sx={{ color: c.textPrimary, fontWeight: authFontWeights.medium }}
+        underline="none"
+        sx={{
+          color: c.brandSoft,
+          fontWeight: authFontWeights.bold,
+          '&:hover': { textDecoration: 'underline', textUnderlineOffset: '3px' },
+          '&:focus-visible': { outline: `2px solid ${c.focusRing}`, outlineOffset: 2 },
+        }}
       >
         {actionLabel}
       </Link>

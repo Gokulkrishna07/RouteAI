@@ -15,6 +15,7 @@ import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined'
 import { ROUTES, docsPalette, fonts, fontSizes, type DocsColors, type ThemeMode } from '../constants'
 import { useThemeMode } from '../theme'
 import { clearSession } from '../lib/session'
+import BrandMark from '../components/BrandMark'
 
 export const NAV_HEIGHT = 56
 
@@ -27,7 +28,7 @@ export const DOCS_LAYOUT = {
   mobileDrawerWidth: 280,
   searchMaxWidth: 360,
   logoSize: 26,
-  logoFontSize: 13,
+  logoGlyphSize: 13,
   navIconSize: 19,
   searchIconSize: 17,
   sidebarIconSize: 16,
@@ -153,16 +154,12 @@ export function Logo() {
           justifyContent: 'center',
         }}
       >
-        <Typography
-          sx={{ color: c.bg, fontWeight: 800, fontSize: DOCS_LAYOUT.logoFontSize, fontFamily: fonts.heading, lineHeight: 1 }}
-        >
-          AR
-        </Typography>
+        <BrandMark size={DOCS_LAYOUT.logoGlyphSize} color={c.bg} />
       </Box>
       <Typography
         sx={{ fontWeight: 700, fontSize: '0.9375rem', fontFamily: fonts.heading, color: c.textPrimary, whiteSpace: 'nowrap' }}
       >
-        AI Model Router
+        Route AI
       </Typography>
     </Box>
   )

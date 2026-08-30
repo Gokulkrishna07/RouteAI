@@ -104,7 +104,7 @@ function EmptyState({ onCreate }: { onCreate: () => void }) {
         {EMPTY_STATE_TITLE}
       </Typography>
       <Typography sx={{ fontSize: fontSizes.small, color: c.textSecondary, maxWidth: 420, mb: 2.5, lineHeight: 1.6 }}>
-        Create one to call AI Model Router from your own application, without signing a user in.
+        Create one to call Route AI from your own application, without signing a user in.
       </Typography>
       <Button
         onClick={onCreate}
@@ -217,7 +217,7 @@ function ApiKeys() {
         API keys
       </Typography>
       <Typography sx={{ fontSize: fontSizes.body, lineHeight: 1.7, color: c.textSecondary, mb: 6 }}>
-        An API key lets your own application call <Keyword>AI Model Router</Keyword> directly &mdash; no
+        An API key lets your own application call <Keyword>Route AI</Keyword> directly &mdash; no
         login screen, no session to keep alive. Each key carries its own permissions and rate limit, and
         you can revoke any one of them without touching the others.
       </Typography>

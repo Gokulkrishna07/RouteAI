@@ -7,7 +7,6 @@ import {
   AUTH_REQUEST_ERRORS,
   AUTH_THEME_MODE,
   EMAIL_MAX_LENGTH,
-  LOGIN_STEPS,
   PASSWORD_HINT,
 } from '../features/auth/auth.constants'
 import type { LoginFormValues } from '../features/auth/auth.types'
@@ -22,7 +21,6 @@ import AuthSubmitButton from '../features/auth/components/AuthSubmitButton'
 import { FixedThemeMode } from '../theme'
 
 const INITIAL_VALUES: LoginFormValues = { email: '', password: '' }
-const ACTIVE_STEP = 1
 
 const copy = AUTH_COPY.login
 
@@ -42,12 +40,7 @@ function Login() {
 
   return (
     <FixedThemeMode mode={AUTH_THEME_MODE}>
-      <AuthLayout
-        title={copy.title}
-        subtitle={copy.subtitle}
-        activeStep={ACTIVE_STEP}
-        steps={LOGIN_STEPS}
-      >
+      <AuthLayout title={copy.title} subtitle={copy.subtitle}>
         {/* `noValidate`: validation messages come from `validateLoginForm` so they
             are consistent across browsers and assertable in tests. */}
         <Box component="form" onSubmit={handleSubmit} noValidate>
